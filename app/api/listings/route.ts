@@ -238,7 +238,7 @@ export async function POST(req: Request) {
         maxApplicants: parseInt(maxApplicants),
         targetBranch,
         targetGradYear: targetGradYear ? parseInt(targetGradYear) : null,
-        status: "DRAFT", // Start as DRAFT
+        status: "ACTIVE",
         requiredSkills: {
           create: reqSkillIds.map((skillId) => ({ skillId })),
         },
