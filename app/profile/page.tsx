@@ -461,7 +461,7 @@ export default function Profile() {
             <button
               type="submit"
               disabled={submitting}
-              className="gradient-btn rounded-full px-6 py-3 text-xs font-bold uppercase tracking-[0.15em] text-white shadow-lg disabled:opacity-50 cursor-pointer"
+              className="solid-btn rounded-full px-6 py-3 text-xs font-bold uppercase tracking-[0.15em] shadow-lg disabled:opacity-50 cursor-pointer"
             >
               {submitting ? "Saving Parameters..." : "Save Configuration"}
             </button>

@@ -330,7 +330,7 @@ export default function CompanyDashboard() {
           </h2>
           <button
             onClick={() => setShowCreateForm(!showCreateForm)}
-            className="gradient-btn rounded-full px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg cursor-pointer"
+            className="solid-btn rounded-full px-6 py-2.5 text-xs font-bold uppercase tracking-wider shadow-lg cursor-pointer"
           >
             {showCreateForm ? "Cancel Posting" : "Create Opportunity"}
           </button>
@@ -544,7 +544,7 @@ export default function CompanyDashboard() {
               <div className="flex justify-end pt-4 border-t border-white/10">
                 <button
                   type="submit"
-                  className="gradient-btn rounded-full px-8 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg cursor-pointer"
+                  className="solid-btn rounded-full px-8 py-3 text-xs font-bold uppercase tracking-wider shadow-lg cursor-pointer"
                 >
                   Publish Listing
                 </button>

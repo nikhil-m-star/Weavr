@@ -74,7 +74,7 @@ export default function Home() {
             <button
               onClick={() => router.push(dashboardUrl)}
               disabled={loadingRole}
-              className="gradient-btn rounded-full px-6 py-2.5 text-[9px] font-black uppercase tracking-[0.2em] text-white shadow-lg cursor-pointer disabled:opacity-50"
+              className="solid-btn rounded-full px-6 py-2.5 text-[9px] font-black uppercase tracking-[0.2em] shadow-lg cursor-pointer disabled:opacity-50"
             >
               {loadingRole ? "Loading..." : "Go to Dashboard"}
             </button>
@@ -86,7 +86,7 @@ export default function Home() {
                 </button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <button className="gradient-btn rounded-full px-6 py-2.5 text-[9px] font-black uppercase tracking-[0.2em] text-white shadow-lg cursor-pointer">
+                <button className="solid-btn rounded-full px-6 py-2.5 text-[9px] font-black uppercase tracking-[0.2em] shadow-lg cursor-pointer">
                   Sign Up
                 </button>
               </SignUpButton>
@@ -97,8 +97,6 @@ export default function Home() {
 
       {/* 3D Immersive Hero Section */}
       <section className="min-h-screen flex flex-col items-center justify-center px-6 relative">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(124,58,237,0.08)_0,transparent_60%)] pointer-events-none"></div>
-        
         <div className="text-center max-w-5xl z-10 space-y-8 select-none">
           <h1 className="text-[12vw] font-black tracking-tighter uppercase leading-none text-white select-none">
             WEAVR
@@ -110,14 +108,14 @@ export default function Home() {
             {isSignedIn ? (
               <button
                 onClick={() => router.push(dashboardUrl)}
-                className="gradient-btn rounded-full px-8 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-white shadow-2xl transition duration-300 cursor-pointer"
+                className="solid-btn rounded-full px-8 py-3.5 text-xs font-bold uppercase tracking-[0.2em] shadow-2xl transition duration-300 cursor-pointer"
               >
                 Go to Dashboard
               </button>
             ) : (
               <>
                 <SignUpButton mode="modal">
-                  <button className="gradient-btn rounded-full px-8 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-white shadow-2xl transition duration-300 cursor-pointer">
+                  <button className="solid-btn rounded-full px-8 py-3.5 text-xs font-bold uppercase tracking-[0.2em] shadow-2xl transition duration-300 cursor-pointer">
                     Get Started
                   </button>
                 </SignUpButton>

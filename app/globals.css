@@ -58,20 +58,20 @@ body {
   box-shadow: 0 0 40px -10px rgba(6, 182, 212, 0.3);
 }
 
-.gradient-text {
-  background: linear-gradient(to right, #06B6D4, #EC4899);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.accent-text {
+  color: #06B6D4;
 }
 
-.gradient-btn {
-  background: linear-gradient(to right, #06B6D4, #EC4899);
+.solid-btn {
+  background-color: #ffffff;
+  color: #050505;
   transition: all 0.2s ease-in-out;
 }
 
-.gradient-btn:hover {
+.solid-btn:hover {
   transform: scale(1.02);
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+  background-color: #ededed;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
 }
 
 /* Micro-animations */
