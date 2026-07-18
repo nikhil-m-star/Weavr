@@ -81,7 +81,6 @@ export default function Profile() {
     }
   }, [isLoaded, isSignedIn, user, router]);
 
-  // Calculate live completeness score for Student
   const completenessScore = (() => {
     if (role !== "student") return 0;
     const fields = [name, college, branch, gradYear, cgpa, githubUrl, linkedinUrl, bio, resumeUrl];
@@ -161,32 +160,33 @@ export default function Profile() {
 
   if (!isLoaded || loading) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-white min-h-screen">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
+      <div className="flex flex-1 items-center justify-center bg-[#050505] min-h-screen">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-accent-cyan border-t-transparent"></div>
       </div>
     );
   }
 
   if (!role) {
     return (
-      <div className="flex flex-col flex-1 items-center justify-center bg-white px-6 py-24 min-h-screen">
-        <div className="max-w-md w-full text-center">
-          <h2 className="text-3xl font-black text-black">Select Your Role</h2>
-          <p className="mt-2 text-sm text-black font-light">Choose how you want to use Weavr.</p>
-          <div className="mt-8 grid grid-cols-2 gap-4">
+      <div className="flex flex-col flex-1 items-center justify-center bg-[#050505] px-6 py-24 min-h-screen relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-accent-cyan/5 rounded-full blur-[90px] pointer-events-none"></div>
+        <div className="max-w-md w-full text-center z-10 space-y-6">
+          <h2 className="text-3xl font-black uppercase tracking-[0.2em] text-white">Select Your Role</h2>
+          <p className="text-xs uppercase tracking-[0.15em] text-card-foreground font-light">Choose how you want to connect.</p>
+          <div className="mt-8 grid grid-cols-2 gap-6 pt-4">
             <button
               onClick={() => handleRoleSelect("student")}
-              className="border-2 border-black rounded p-6 hover:border-blue-600 hover:text-blue-600 transition duration-200 flex flex-col items-center justify-center space-y-2 font-semibold text-black"
+              className="glass-card rounded-lg p-8 hover:border-accent-cyan flex flex-col items-center justify-center space-y-3 cursor-pointer group"
             >
-              <span className="text-lg">Student</span>
-              <span className="text-xs font-light text-black">Find talent matches</span>
+              <span className="text-lg font-bold uppercase tracking-wider text-white group-hover:text-accent-cyan transition-colors">Student</span>
+              <span className="text-[10px] uppercase tracking-wider text-card-foreground">Find Matches</span>
             </button>
             <button
               onClick={() => handleRoleSelect("company")}
-              className="border-2 border-black rounded p-6 hover:border-blue-600 hover:text-blue-600 transition duration-200 flex flex-col items-center justify-center space-y-2 font-semibold text-black"
+              className="glass-card rounded-lg p-8 hover:border-accent-pink flex flex-col items-center justify-center space-y-3 cursor-pointer group"
             >
-              <span className="text-lg">Company</span>
-              <span className="text-xs font-light text-black">Post opportunities</span>
+              <span className="text-lg font-bold uppercase tracking-wider text-white group-hover:text-accent-pink transition-colors">Company</span>
+              <span className="text-[10px] uppercase tracking-wider text-card-foreground">Post Jobs</span>
             </button>
           </div>
         </div>
@@ -195,288 +195,275 @@ export default function Profile() {
   }
 
   return (
-    <div className="flex flex-col flex-1 bg-white min-h-screen py-12 px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto w-full">
-        <div className="flex items-center justify-between border-b pb-6 border-black">
+    <div className="flex flex-col flex-1 bg-[#050505] min-h-screen py-12 px-6 lg:px-8 relative overflow-hidden">
+      <div className="absolute top-0 right-1/4 w-[300px] h-[300px] bg-accent-purple/5 rounded-full blur-[80px] pointer-events-none"></div>
+
+      <div className="max-w-2xl mx-auto w-full z-10">
+        <div className="flex items-center justify-between border-b pb-6 border-white/10">
           <div>
-            <h2 className="text-3xl font-black text-black">
-              {role === "student" ? "Student Profile" : "Company Profile"}
+            <h2 className="text-2xl font-black uppercase tracking-[0.15em] text-white">
+              {role === "student" ? "Configure Student" : "Configure Company"}
             </h2>
-            <p className="mt-1 text-sm font-light text-black">
-              Update your matching parameters.
+            <p className="mt-1 text-xs uppercase tracking-wider text-card-foreground font-light">
+              Weavr Matching Parameters
             </p>
           </div>
           {role === "student" && (
             <div className="flex items-center space-x-3">
               <div className="relative flex items-center justify-center">
                 <svg className="w-12 h-12 transform -rotate-90">
+                  <circle cx="24" cy="24" r="20" stroke="rgba(255,255,255,0.05)" strokeWidth="3" fill="transparent" />
                   <circle
                     cx="24"
                     cy="24"
                     r="20"
-                    stroke="#eaeaea"
-                    strokeWidth="4"
-                    fill="transparent"
-                  />
-                  <circle
-                    cx="24"
-                    cy="24"
-                    r="20"
-                    stroke="#2563eb"
-                    strokeWidth="4"
+                    stroke="#06B6D4"
+                    strokeWidth="3"
                     fill="transparent"
                     strokeDasharray={2 * Math.PI * 20}
-                    strokeDashoffset={
-                      2 * Math.PI * 20 * (1 - completenessScore / 100)
-                    }
+                    strokeDashoffset={2 * Math.PI * 20 * (1 - completenessScore / 100)}
                     className="transition-all duration-300"
                   />
                 </svg>
-                <span className="absolute text-xs font-bold text-black">
+                <span className="absolute text-[10px] font-bold text-white">
                   {completenessScore}%
                 </span>
               </div>
-              <span className="text-xs font-light text-black">Completeness</span>
+              <span className="text-[10px] uppercase tracking-wider text-card-foreground">Completeness</span>
             </div>
           )}
         </div>
 
         {error && (
-          <div className="mt-6 border border-black bg-white text-blue-600 p-4 rounded text-sm font-semibold">
+          <div className="mt-6 border border-accent-pink/30 bg-accent-pink/5 text-accent-pink p-4 rounded text-xs uppercase tracking-wider font-semibold">
             {error}
           </div>
         )}
 
         {role === "company" && !companyApproved && companyName && (
-          <div className="mt-6 border border-black bg-white text-black p-4 rounded text-sm font-light">
-            Your company account is pending administrator approval. You will be able to access the dashboard once approved.
+          <div className="mt-6 border border-white/10 bg-card p-4 rounded text-xs uppercase tracking-wider text-card-foreground font-light">
+            Your company account is pending administrator approval.
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-          {role === "student" ? (
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="glass-panel rounded-xl p-8 space-y-6">
+            {role === "student" ? (
+              <div className="space-y-5">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                    College
+                  <label className="block text-[10px] font-semibold uppercase tracking-widest text-card-foreground">
+                    Full Name
                   </label>
                   <input
                     type="text"
                     required
-                    value={college}
-                    onChange={(e) => setCollege(e.target.value)}
-                    className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
                   />
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                    Branch / Major
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Computer Science"
-                    value={branch}
-                    onChange={(e) => setBranch(e.target.value)}
-                    className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-                  />
-                </div>
-              </div>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                    Graduation Year
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    placeholder="e.g. 2026"
-                    value={gradYear}
-                    onChange={(e) => setGradYear(e.target.value)}
-                    className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                    CGPA
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    required
-                    placeholder="e.g. 9.15"
-                    value={cgpa}
-                    onChange={(e) => setCgpa(e.target.value)}
-                    className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                    GitHub Profile URL
-                  </label>
-                  <input
-                    type="url"
-                    value={githubUrl}
-                    onChange={(e) => setGithubUrl(e.target.value)}
-                    className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                    LinkedIn Profile URL
-                  </label>
-                  <input
-                    type="url"
-                    value={linkedinUrl}
-                    onChange={(e) => setLinkedinUrl(e.target.value)}
-                    className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                  Resume URL (PDF Link)
-                </label>
-                <input
-                  type="url"
-                  placeholder="https://example.com/my-resume.pdf"
-                  value={resumeUrl}
-                  onChange={(e) => setResumeUrl(e.target.value)}
-                  className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                  Bio / Short Pitch
-                </label>
-                <textarea
-                  rows={3}
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                  Skills
-                </label>
-                <div className="flex mt-1 space-x-2">
-                  <input
-                    type="text"
-                    placeholder="Add a skill (e.g. react, docker)"
-                    value={skillInput}
-                    onChange={(e) => setSkillInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleAddSkill();
-                      }
-                    }}
-                    className="block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleAddSkill}
-                    className="bg-black text-white px-4 py-2 rounded hover:bg-blue-600 text-sm font-semibold transition"
-                  >
-                    Add
-                  </button>
-                </div>
-                {/* Seed autocomplete suggestions */}
-                {skillInput && (
-                  <div className="mt-1 border border-black rounded divide-y max-h-32 overflow-y-auto">
-                    {allSkills
-                      .filter((s) =>
-                        s.name.toLowerCase().includes(skillInput.toLowerCase())
-                      )
-                      .map((s) => (
-                        <div
-                          key={s.id}
-                          onClick={() => {
-                            if (!skills.includes(s.name)) {
-                              setSkills([...skills, s.name]);
-                            }
-                            setSkillInput("");
-                          }}
-                          className="px-3 py-2 text-sm text-black hover:bg-blue-50 cursor-pointer font-light"
-                        >
-                          {s.name}
-                        </div>
-                      ))}
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  <div>
+                    <label className="block text-[10px] font-semibold uppercase tracking-widest text-card-foreground">
+                      College / University
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={college}
+                      onChange={(e) => setCollege(e.target.value)}
+                      className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
+                    />
                   </div>
-                )}
-                {/* Skill badges */}
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="inline-flex items-center rounded-full border border-black bg-white px-3 py-0.5 text-xs font-light text-black"
+                  <div>
+                    <label className="block text-[10px] font-semibold uppercase tracking-widest text-card-foreground">
+                      Branch / Major
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={branch}
+                      onChange={(e) => setBranch(e.target.value)}
+                      className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  <div>
+                    <label className="block text-[10px] font-semibold uppercase tracking-widest text-card-foreground">
+                      Graduation Year
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      value={gradYear}
+                      onChange={(e) => setGradYear(e.target.value)}
+                      className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-semibold uppercase tracking-widest text-card-foreground">
+                      Cumulative GPA (CGPA)
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      required
+                      value={cgpa}
+                      onChange={(e) => setCgpa(e.target.value)}
+                      className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  <div>
+                    <label className="block text-[10px] font-semibold uppercase tracking-widest text-card-foreground">
+                      GitHub Profile URL
+                    </label>
+                    <input
+                      type="url"
+                      value={githubUrl}
+                      onChange={(e) => setGithubUrl(e.target.value)}
+                      className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-semibold uppercase tracking-widest text-card-foreground">
+                      LinkedIn Profile URL
+                    </label>
+                    <input
+                      type="url"
+                      value={linkedinUrl}
+                      onChange={(e) => setLinkedinUrl(e.target.value)}
+                      className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-semibold uppercase tracking-widest text-card-foreground">
+                    Resume Link (PDF URL)
+                  </label>
+                  <input
+                    type="url"
+                    value={resumeUrl}
+                    onChange={(e) => setResumeUrl(e.target.value)}
+                    className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-semibold uppercase tracking-widest text-card-foreground">
+                    Candidate Biography
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-semibold uppercase tracking-widest text-card-foreground">
+                    Core Skillsets
+                  </label>
+                  <div className="flex mt-1.5 space-x-2">
+                    <input
+                      type="text"
+                      placeholder="Type skill name..."
+                      value={skillInput}
+                      onChange={(e) => setSkillInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAddSkill();
+                        }
+                      }}
+                      className="block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddSkill}
+                      className="bg-white text-black hover:bg-accent-cyan hover:text-white px-4 rounded text-xs font-semibold uppercase tracking-wider transition duration-200 cursor-pointer"
                     >
-                      {skill}
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveSkill(skill)}
-                        className="ml-1.5 inline-flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded-full text-black hover:text-blue-600 focus:outline-none"
+                      Add
+                    </button>
+                  </div>
+                  {skillInput && (
+                    <div className="mt-1.5 border border-white/10 rounded divide-y divide-white/5 bg-[#0c0c0c] max-h-32 overflow-y-auto z-20 relative">
+                      {allSkills
+                        .filter((s) => s.name.toLowerCase().includes(skillInput.toLowerCase()))
+                        .map((s) => (
+                          <div
+                            key={s.id}
+                            onClick={() => {
+                              if (!skills.includes(s.name)) {
+                                setSkills([...skills, s.name]);
+                              }
+                              setSkillInput("");
+                            }}
+                            className="px-3.5 py-2 text-xs text-white hover:bg-accent-cyan hover:text-white cursor-pointer font-light transition-colors"
+                          >
+                            {s.name}
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-light uppercase tracking-wider text-white"
                       >
-                        ×
-                      </button>
-                    </span>
-                  ))}
+                        {skill}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveSkill(skill)}
+                          className="ml-1.5 inline-flex h-3 w-3 items-center justify-center text-card-foreground hover:text-accent-pink text-xs focus:outline-none"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                  Company Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                  className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-                />
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-[10px] font-semibold uppercase tracking-widest text-card-foreground">
+                    Registered Company Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-pink focus:ring-1 focus:ring-accent-pink text-xs font-light tracking-wide transition-colors"
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
-          <div className="flex justify-between items-center pt-4 border-t border-black">
+          <div className="flex justify-between items-center pt-4 border-t border-white/10">
             <button
               type="button"
               onClick={() => setRole(null)}
-              className="text-xs font-semibold text-black hover:text-blue-600 transition"
+              className="text-[10px] font-bold uppercase tracking-widest text-card-foreground hover:text-accent-cyan transition-colors"
             >
-              ← Go Back
+              ← Change Role
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="bg-black text-white px-6 py-3 rounded text-sm font-semibold hover:bg-blue-600 disabled:opacity-50 transition"
+              className="gradient-btn rounded-full px-6 py-3 text-xs font-bold uppercase tracking-[0.15em] text-white shadow-lg disabled:opacity-50 cursor-pointer"
             >
-              {submitting ? "Saving..." : "Save Profile"}
+              {submitting ? "Saving Parameters..." : "Save Configuration"}
             </button>
           </div>
         </form>

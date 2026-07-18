@@ -1,26 +1,85 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #050505;
+  --foreground: #ffffff;
+  --card: #111111;
+  --card-foreground: #999999;
+  --accent-cyan: #06B6D4;
+  --accent-pink: #EC4899;
+  --accent-purple: #7C3AED;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-pink: var(--accent-pink);
+  --color-accent-purple: var(--accent-purple);
+  --font-sans: var(--font-geist-sans), Inter, sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Glassmorphism helpers */
+.glass-panel {
+  background: rgba(17, 17, 17, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card {
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Accents and glows */
+.glow-purple {
+  box-shadow: 0 0 40px -10px rgba(124, 58, 237, 0.3);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 40px -10px rgba(6, 182, 212, 0.3);
+}
+
+.gradient-text {
+  background: linear-gradient(to right, #06B6D4, #EC4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-btn {
+  background: linear-gradient(to right, #06B6D4, #EC4899);
+  transition: all 0.2s ease-in-out;
+}
+
+.gradient-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+}
+
+/* Micro-animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

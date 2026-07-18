@@ -52,6 +52,11 @@ export default function CompanyDashboard() {
         return;
       }
 
+      if (profileData.success && !profileData.data.profile.approved) {
+        router.push("/profile");
+        return;
+      }
+
       if (listingsData.success) {
         setListings(listingsData.data);
       }
@@ -62,7 +67,7 @@ export default function CompanyDashboard() {
         setAllSkills(skillsData.data);
       }
     } catch (err) {
-      console.error("Failed to load company data:", err);
+      console.error("Failed to load dashboard data:", err);
     } finally {
       setLoading(false);
     }
@@ -86,12 +91,12 @@ export default function CompanyDashboard() {
     const payload = {
       title,
       description,
-      stipend,
+      stipend: parseFloat(stipend),
       location,
-      deadline,
-      maxApplicants,
-      targetBranch: targetBranch || null,
-      targetGradYear: targetGradYear || null,
+      deadline: new Date(deadline),
+      maxApplicants: parseInt(maxApplicants),
+      targetBranch: targetBranch || undefined,
+      targetGradYear: targetGradYear ? parseInt(targetGradYear) : undefined,
       requiredSkills: reqSkills,
       preferredSkills: prefSkills,
     };
@@ -105,12 +110,13 @@ export default function CompanyDashboard() {
 
       const data = await res.json();
       if (data.success) {
-        setSuccess("Listing successfully created in DRAFT state!");
+        setSuccess("Job listing published successfully!");
         setShowCreateForm(false);
         // Clear form
         setTitle("");
         setDescription("");
         setStipend("");
+        setLocation("REMOTE");
         setDeadline("");
         setMaxApplicants("");
         setTargetBranch("");
@@ -119,14 +125,14 @@ export default function CompanyDashboard() {
         setPrefSkills([]);
         await fetchData();
       } else {
-        setError(data.error.message || "Failed to create listing");
+        setError(data.error.message || "Failed to create job listing");
       }
     } catch (err) {
       setError("An unexpected error occurred.");
     }
   };
 
-  const handleUpdateStatus = async (listingId: string, status: "ACTIVE" | "CLOSED") => {
+  const handleCloseListing = async (listingId: string) => {
     setError(null);
     setSuccess(null);
 
@@ -134,15 +140,15 @@ export default function CompanyDashboard() {
       const res = await fetch(`/api/listings/${listingId}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({ status: "CLOSED" }),
       });
 
       const data = await res.json();
       if (data.success) {
-        setSuccess(`Listing status updated to ${status}`);
+        setSuccess("Job listing closed successfully");
         await fetchData();
       } else {
-        setError(data.error.message || "Failed to update listing status");
+        setError(data.error.message || "Failed to close listing");
       }
     } catch (err) {
       setError("An unexpected error occurred.");
@@ -154,12 +160,6 @@ export default function CompanyDashboard() {
     setSuccess(null);
 
     try {
-      // In this system, we can update individual status by modifying the application.
-      // We can use a bulk endpoint or build a separate PUT/PATCH application status endpoint,
-      // or we can use the bulk update endpoint for a single ID by filtering.
-      // Let's create an endpoint `PATCH /api/applications/[id]/status` to make it clean!
-      // Wait, is there a simpler way? Yes, we can build a quick route at `/api/applications/[id]/status`.
-      // Let's implement it in a moment. Let's call it here:
       const res = await fetch(`/api/applications/${applicationId}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -239,31 +239,37 @@ export default function CompanyDashboard() {
 
   if (!isLoaded || loading) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-white min-h-screen">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
+      <div className="flex flex-1 items-center justify-center bg-[#050505] min-h-screen">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-accent-cyan border-t-transparent"></div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col flex-1 bg-white min-h-screen">
-      {/* Header */}
-      <nav className="border-b border-black py-4 px-6 lg:px-8 bg-white sticky top-0 z-50">
+    <div className="flex flex-col flex-1 bg-[#050505] min-h-screen relative overflow-hidden">
+      {/* Background glow ambient */}
+      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-accent-pink/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+      {/* Navigation Header */}
+      <nav className="glass-panel py-4 px-6 lg:px-8 sticky top-0 z-50 backdrop-blur-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-8">
-            <span className="text-2xl font-black text-black tracking-tight cursor-pointer" onClick={() => router.push("/")}>
+            <span
+              className="text-2xl font-black text-white tracking-[0.15em] uppercase cursor-pointer select-none"
+              onClick={() => router.push("/")}
+            >
               Weavr
             </span>
-            <span className="text-xs font-semibold text-black uppercase tracking-widest px-2 py-1 border border-black rounded">
-              Company Dashboard
+            <span className="text-[10px] font-bold text-accent-pink uppercase tracking-widest px-2.5 py-0.5 border border-accent-pink/30 rounded bg-accent-pink/5">
+              Recruiter Board
             </span>
           </div>
           <div className="flex items-center space-x-6">
             <button
               onClick={() => router.push("/profile")}
-              className="text-sm font-semibold text-black hover:text-blue-600 transition"
+              className="text-xs font-bold uppercase tracking-widest text-white hover:text-accent-pink transition-colors"
             >
-              Company Profile
+              Company Parameters
             </button>
             <div className="relative">
               <button
@@ -273,24 +279,24 @@ export default function CompanyDashboard() {
                     handleMarkNotificationsRead();
                   }
                 }}
-                className="relative text-sm font-semibold text-black hover:text-blue-600 transition flex items-center"
+                className="relative text-xs font-bold uppercase tracking-widest text-white hover:text-accent-pink transition-colors flex items-center"
               >
-                Notifications
+                Inbox
                 {notifications.length > 0 && (
-                  <span className="absolute -top-1.5 -right-2 h-2 w-2 rounded-full bg-blue-600"></span>
+                  <span className="ml-1.5 h-2 w-2 rounded-full bg-accent-pink shadow-[0_0_10px_#EC4899]"></span>
                 )}
               </button>
               {showNotifications && (
-                <div className="absolute right-0 mt-3 w-80 rounded border border-black bg-white shadow-lg py-2 z-50">
-                  <div className="px-4 py-2 border-b border-black font-semibold text-xs uppercase tracking-wider text-black">
-                    Unread Notifications
+                <div className="absolute right-0 mt-3 w-80 rounded border border-white/10 bg-[#111111] shadow-2xl py-2 z-50 animate-fade-in">
+                  <div className="px-4 py-2 border-b border-white/10 font-bold text-[10px] uppercase tracking-wider text-white">
+                    Recruiter Updates
                   </div>
                   {notifications.length === 0 ? (
-                    <div className="px-4 py-3 text-xs font-light text-black">No unread notifications</div>
+                    <div className="px-4 py-3 text-[10px] uppercase tracking-wider text-card-foreground">No updates</div>
                   ) : (
-                    <div className="divide-y divide-gray-100 max-h-60 overflow-y-auto">
+                    <div className="divide-y divide-white/5 max-h-60 overflow-y-auto">
                       {notifications.map((n) => (
-                        <div key={n.id} className="px-4 py-3 text-xs text-black font-light">
+                        <div key={n.id} className="px-4 py-3 text-[10px] text-card-foreground leading-relaxed font-light">
                           {n.message}
                         </div>
                       ))}
@@ -304,285 +310,296 @@ export default function CompanyDashboard() {
         </div>
       </nav>
 
-      {/* Main content */}
-      <main className="max-w-7xl mx-auto w-full px-6 lg:px-8 py-12 flex-1">
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto w-full px-6 lg:px-8 py-12 flex-1 z-10 space-y-10">
         {error && (
-          <div className="mb-8 border border-black bg-white text-blue-600 p-4 rounded text-sm font-semibold">
+          <div className="border border-accent-pink/30 bg-accent-pink/5 text-accent-pink p-4 rounded text-xs uppercase tracking-wider font-semibold">
             {error}
           </div>
         )}
+
         {success && (
-          <div className="mb-8 border border-black bg-white text-black p-4 rounded text-sm font-semibold">
+          <div className="border border-accent-cyan/30 bg-accent-cyan/5 text-accent-cyan p-4 rounded text-xs uppercase tracking-wider font-semibold">
             {success}
           </div>
         )}
 
-        <div className="flex justify-between items-center mb-8 border-b border-black pb-4">
-          <h2 className="text-3xl font-black text-black">Job Postings</h2>
+        <div className="flex items-center justify-between border-b border-white/10 pb-4">
+          <h2 className="text-3xl font-black text-white uppercase tracking-[0.2em] select-none">
+            Dashboard
+          </h2>
           <button
             onClick={() => setShowCreateForm(!showCreateForm)}
-            className="bg-black text-white px-4 py-2 rounded text-sm font-semibold hover:bg-blue-600 transition"
+            className="gradient-btn rounded-full px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg cursor-pointer"
           >
-            {showCreateForm ? "Cancel" : "Create Listing"}
+            {showCreateForm ? "Cancel Posting" : "Create Opportunity"}
           </button>
         </div>
 
-        {/* Listing creation form */}
+        {/* Create Listing Form */}
         {showCreateForm && (
-          <form onSubmit={handleCreateListing} className="mb-12 border border-black rounded p-8 space-y-6 max-w-3xl">
-            <h3 className="text-lg font-bold text-black border-b border-black pb-2 mb-4">
-              New Listing Parameters
+          <div className="glass-panel rounded-xl p-8 space-y-6 animate-fade-in">
+            <h3 className="text-sm font-bold uppercase tracking-widest text-white border-b border-white/5 pb-2">
+              Opportunity Parameters
             </h3>
+            <form onSubmit={handleCreateListing} className="space-y-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div>
+                  <label className="block text-[9px] font-semibold uppercase tracking-widest text-card-foreground">
+                    Job Title
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-pink focus:ring-1 focus:ring-accent-pink text-xs font-light tracking-wide transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[9px] font-semibold uppercase tracking-widest text-card-foreground">
+                    Stipend (USD / Month)
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={stipend}
+                    onChange={(e) => setStipend(e.target.value)}
+                    className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-pink focus:ring-1 focus:ring-accent-pink text-xs font-light tracking-wide transition-colors"
+                  />
+                </div>
+              </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                  Job Title
+                <label className="block text-[9px] font-semibold uppercase tracking-widest text-card-foreground">
+                  Job Description
                 </label>
-                <input
-                  type="text"
+                <textarea
+                  rows={3}
                   required
-                  placeholder="e.g. Backend Software Engineer"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-pink focus:ring-1 focus:ring-accent-pink text-xs font-light tracking-wide transition-colors resize-none"
                 />
               </div>
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                  Stipend (per month in USD)
-                </label>
-                <input
-                  type="number"
-                  required
-                  placeholder="e.g. 3000"
-                  value={stipend}
-                  onChange={(e) => setStipend(e.target.value)}
-                  className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-                />
+
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+                <div>
+                  <label className="block text-[9px] font-semibold uppercase tracking-widest text-card-foreground">
+                    Location Type
+                  </label>
+                  <select
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-pink focus:ring-1 focus:ring-accent-pink text-xs font-light tracking-wide transition-colors uppercase"
+                  >
+                    <option value="REMOTE">Remote</option>
+                    <option value="HYBRID">Hybrid</option>
+                    <option value="ONSITE">Onsite</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[9px] font-semibold uppercase tracking-widest text-card-foreground">
+                    Application Deadline
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={deadline}
+                    onChange={(e) => setDeadline(e.target.value)}
+                    className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-pink focus:ring-1 focus:ring-accent-pink text-xs font-light tracking-wide transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[9px] font-semibold uppercase tracking-widest text-card-foreground">
+                    Max Applicant Capacity
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={maxApplicants}
+                    onChange={(e) => setMaxApplicants(e.target.value)}
+                    className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-pink focus:ring-1 focus:ring-accent-pink text-xs font-light tracking-wide transition-colors"
+                  />
+                </div>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                Description
-              </label>
-              <textarea
-                rows={3}
-                required
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-              />
-            </div>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div>
+                  <label className="block text-[9px] font-semibold uppercase tracking-widest text-card-foreground">
+                    Target Branch Filter (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Computer Science"
+                    value={targetBranch}
+                    onChange={(e) => setTargetBranch(e.target.value)}
+                    className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-pink focus:ring-1 focus:ring-accent-pink text-xs font-light tracking-wide transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[9px] font-semibold uppercase tracking-widest text-card-foreground">
+                    Target Graduation Year (Optional)
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="e.g. 2026"
+                    value={targetGradYear}
+                    onChange={(e) => setTargetGradYear(e.target.value)}
+                    className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-pink focus:ring-1 focus:ring-accent-pink text-xs font-light tracking-wide transition-colors"
+                  />
+                </div>
+              </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                  Location Type
-                </label>
-                <select
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                {/* Required Skills */}
+                <div>
+                  <label className="block text-[9px] font-semibold uppercase tracking-widest text-card-foreground">
+                    Required Core Skills
+                  </label>
+                  <div className="flex mt-1.5 space-x-2">
+                    <input
+                      type="text"
+                      placeholder="Type skill name..."
+                      value={reqSkillInput}
+                      onChange={(e) => setReqSkillInput(e.target.value)}
+                      className="block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-pink focus:ring-1 focus:ring-accent-pink text-xs font-light tracking-wide transition-colors"
+                    />
+                  </div>
+                  {reqSkillInput && (
+                    <div className="mt-1.5 border border-white/10 rounded divide-y divide-white/5 bg-[#0c0c0c] max-h-32 overflow-y-auto z-25 relative">
+                      {allSkills
+                        .filter((s) => s.name.toLowerCase().includes(reqSkillInput.toLowerCase()))
+                        .map((s) => (
+                          <div
+                            key={s.id}
+                            onClick={() => {
+                              if (!reqSkills.includes(s.name)) {
+                                setReqSkills([...reqSkills, s.name]);
+                              }
+                              setReqSkillInput("");
+                            }}
+                            className="px-3.5 py-2 text-xs text-white hover:bg-accent-pink hover:text-white cursor-pointer font-light transition-colors"
+                          >
+                            {s.name}
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
+                    {reqSkills.map((sk) => (
+                      <span key={sk} className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[9px] uppercase tracking-wider text-white">
+                        {sk}
+                        <button type="button" onClick={() => setReqSkills(reqSkills.filter((s) => s !== sk))} className="ml-1.5 text-card-foreground hover:text-accent-pink font-bold">×</button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Preferred Skills */}
+                <div>
+                  <label className="block text-[9px] font-semibold uppercase tracking-widest text-card-foreground">
+                    Preferred Secondary Skills
+                  </label>
+                  <div className="flex mt-1.5 space-x-2">
+                    <input
+                      type="text"
+                      placeholder="Type skill name..."
+                      value={prefSkillInput}
+                      onChange={(e) => setPrefSkillInput(e.target.value)}
+                      className="block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-pink focus:ring-1 focus:ring-accent-pink text-xs font-light tracking-wide transition-colors"
+                    />
+                  </div>
+                  {prefSkillInput && (
+                    <div className="mt-1.5 border border-white/10 rounded divide-y divide-white/5 bg-[#0c0c0c] max-h-32 overflow-y-auto z-25 relative">
+                      {allSkills
+                        .filter((s) => s.name.toLowerCase().includes(prefSkillInput.toLowerCase()))
+                        .map((s) => (
+                          <div
+                            key={s.id}
+                            onClick={() => {
+                              if (!prefSkills.includes(s.name)) {
+                                setPrefSkills([...prefSkills, s.name]);
+                              }
+                              setPrefSkillInput("");
+                            }}
+                            className="px-3.5 py-2 text-xs text-white hover:bg-accent-pink hover:text-white cursor-pointer font-light transition-colors"
+                          >
+                            {s.name}
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
+                    {prefSkills.map((sk) => (
+                      <span key={sk} className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[9px] uppercase tracking-wider text-white">
+                        {sk}
+                        <button type="button" onClick={() => setPrefSkills(prefSkills.filter((s) => s !== sk))} className="ml-1.5 text-card-foreground hover:text-accent-pink font-bold">×</button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end pt-4 border-t border-white/10">
+                <button
+                  type="submit"
+                  className="gradient-btn rounded-full px-8 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg cursor-pointer"
                 >
-                  <option value="REMOTE">Remote</option>
-                  <option value="HYBRID">Hybrid</option>
-                  <option value="ONSITE">Onsite</option>
-                </select>
+                  Publish Listing
+                </button>
               </div>
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                  Deadline
-                </label>
-                <input
-                  type="date"
-                  required
-                  value={deadline}
-                  onChange={(e) => setDeadline(e.target.value)}
-                  className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                  Max Applicants Cap
-                </label>
-                <input
-                  type="number"
-                  required
-                  placeholder="e.g. 50"
-                  value={maxApplicants}
-                  onChange={(e) => setMaxApplicants(e.target.value)}
-                  className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                  Target Branch Filter (Optional)
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Computer Science"
-                  value={targetBranch}
-                  onChange={(e) => setTargetBranch(e.target.value)}
-                  className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                  Target Grad Year Filter (Optional)
-                </label>
-                <input
-                  type="number"
-                  placeholder="e.g. 2026"
-                  value={targetGradYear}
-                  onChange={(e) => setTargetGradYear(e.target.value)}
-                  className="mt-1 block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-                />
-              </div>
-            </div>
-
-            {/* Skills Inputs */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                  Required Skills
-                </label>
-                <div className="flex mt-1 space-x-2">
-                  <input
-                    type="text"
-                    placeholder="Add required skill"
-                    value={reqSkillInput}
-                    onChange={(e) => setReqSkillInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        const trimmed = reqSkillInput.trim().toLowerCase();
-                        if (trimmed && !reqSkills.includes(trimmed)) {
-                          setReqSkills([...reqSkills, trimmed]);
-                          setReqSkillInput("");
-                        }
-                      }
-                    }}
-                    className="block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-                  />
-                </div>
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {reqSkills.map((s) => (
-                    <span key={s} className="bg-black text-white text-[10px] px-2 py-0.5 rounded flex items-center">
-                      {s}
-                      <button type="button" onClick={() => setReqSkills(reqSkills.filter((x) => x !== s))} className="ml-1 text-xs">×</button>
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-black">
-                  Preferred Skills
-                </label>
-                <div className="flex mt-1 space-x-2">
-                  <input
-                    type="text"
-                    placeholder="Add preferred skill"
-                    value={prefSkillInput}
-                    onChange={(e) => setPrefSkillInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        const trimmed = prefSkillInput.trim().toLowerCase();
-                        if (trimmed && !prefSkills.includes(trimmed)) {
-                          setPrefSkills([...prefSkills, trimmed]);
-                          setPrefSkillInput("");
-                        }
-                      }
-                    }}
-                    className="block w-full rounded border border-black px-3 py-2 text-black focus:outline-none focus:border-blue-600 sm:text-sm font-light"
-                  />
-                </div>
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {prefSkills.map((s) => (
-                    <span key={s} className="border border-black bg-white text-black text-[10px] px-2 py-0.5 rounded flex items-center">
-                      {s}
-                      <button type="button" onClick={() => setPrefSkills(prefSkills.filter((x) => x !== s))} className="ml-1 text-xs">×</button>
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-black text-white font-semibold py-3 rounded text-sm hover:bg-blue-600 transition"
-            >
-              Post Opportunity (DRAFT)
-            </button>
-          </form>
+            </form>
+          </div>
         )}
 
+        {/* Listings Display */}
         {listings.length === 0 ? (
-          <div className="text-center py-12 border border-dashed border-black rounded">
-            <p className="text-black font-light">No listings created yet. Click "Create Listing" above to get started.</p>
+          <div className="text-center py-16 border border-dashed border-white/10 rounded-xl bg-[#111111]/30">
+            <p className="text-xs uppercase tracking-wider text-card-foreground font-light">No jobs published yet.</p>
           </div>
         ) : (
           <div className="space-y-12">
             {listings.map((l) => (
-              <div key={l.id} className="border border-black rounded p-8">
-                <div className="flex items-center justify-between border-b border-black pb-4 mb-6">
+              <div key={l.id} className="glass-panel rounded-xl p-8 space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-white/5 pb-4">
                   <div>
-                    <h3 className="text-2xl font-bold text-black">{l.title}</h3>
-                    <div className="mt-2 flex flex-wrap gap-2 text-xs font-light text-black">
-                      <span>{l.location}</span>
-                      <span>•</span>
-                      <span>${l.stipend}/mo</span>
-                      <span>•</span>
-                      <span>Cap: {l.currentApplicants}/{l.maxApplicants} applicants</span>
+                    <h3 className="text-lg font-bold text-white uppercase tracking-wide">{l.title}</h3>
+                    <div className="mt-1 text-[10px] text-card-foreground uppercase tracking-wider font-light flex flex-wrap gap-x-4">
+                      <span>Stipend: ${l.stipend.toLocaleString()}/mo</span>
+                      <span>Type: {l.location}</span>
+                      <span>Cap: {l.currentApplicants}/{l.maxApplicants} applied</span>
                     </div>
                   </div>
-
-                  <div className="flex flex-col items-end space-y-2">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-xs font-semibold text-black uppercase">Status:</span>
-                      <span className="text-xs font-bold text-blue-600 uppercase border border-blue-600 px-2 py-0.5 rounded">
-                        {l.status}
-                      </span>
-                    </div>
-                    <div className="flex space-x-2">
-                      {l.status === "DRAFT" && (
-                        <button
-                          onClick={() => handleUpdateStatus(l.id, "ACTIVE")}
-                          className="bg-black hover:bg-blue-600 text-white text-xs font-semibold px-3 py-1.5 rounded transition"
-                        >
-                          Publish ACTIVE
-                        </button>
-                      )}
-                      {l.status === "ACTIVE" && (
-                        <button
-                          onClick={() => handleUpdateStatus(l.id, "CLOSED")}
-                          className="bg-white border border-black hover:border-blue-600 hover:text-blue-600 text-black text-xs font-semibold px-3 py-1.5 rounded transition"
-                        >
-                          Manual CLOSE
-                        </button>
-                      )}
-                    </div>
+                  <div className="mt-4 sm:mt-0 flex items-center space-x-3">
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${
+                      l.status === "ACTIVE" ? "border-accent-cyan/40 text-accent-cyan bg-accent-cyan/5" : "border-accent-pink/40 text-accent-pink bg-accent-pink/5"
+                    }`}>
+                      {l.status}
+                    </span>
+                    {l.status === "ACTIVE" && (
+                      <button
+                        onClick={() => handleCloseListing(l.id)}
+                        className="border border-white/15 text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg hover:border-accent-pink hover:text-accent-pink transition"
+                      >
+                        Manual CLOSE
+                      </button>
+                    )}
                   </div>
                 </div>
 
                 {/* Applications section */}
                 <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <h4 className="text-sm font-semibold uppercase tracking-wider text-black">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 space-y-2 sm:space-y-0">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-white">
                       Applicants ({l.applications.length})
                     </h4>
                     {l.applications.length > 0 && (
                       <div className="flex items-center space-x-2">
-                        <span className="text-xs font-light text-black">Bulk Status Update:</span>
+                        <span className="text-[10px] font-light text-card-foreground uppercase tracking-wider">Bulk Status:</span>
                         <button
                           onClick={() => handleBulkUpdateApplicants(l.id, "UNDER_REVIEW", "SUBMITTED")}
-                          className="border border-black text-xs font-semibold px-2 py-1 hover:border-blue-600 hover:text-blue-600 transition"
+                          className="border border-white/15 text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded hover:border-accent-cyan hover:text-accent-cyan transition"
                         >
                           All SUBMITTED → UNDER REVIEW
                         </button>
@@ -591,46 +608,48 @@ export default function CompanyDashboard() {
                   </div>
 
                   {l.applications.length === 0 ? (
-                    <p className="text-xs font-light text-black py-4">No applications received yet.</p>
+                    <p className="text-[10px] uppercase tracking-wider text-card-foreground py-4 font-light">No applicants received yet.</p>
                   ) : (
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left text-xs divide-y divide-black">
+                    <div className="overflow-x-auto border border-white/5 rounded-lg">
+                      <table className="w-full text-left text-xs divide-y divide-white/10 bg-[#090909]">
                         <thead>
-                          <tr className="font-semibold text-black uppercase tracking-wider bg-gray-55">
-                            <th className="py-3 px-4">Applicant</th>
-                            <th className="py-3 px-4">Branch & GPA</th>
-                            <th className="py-3 px-4">Match Score</th>
-                            <th className="py-3 px-4">Current Status</th>
-                            <th className="py-3 px-4 text-right">Actions</th>
+                          <tr className="font-bold text-white uppercase tracking-wider bg-white/5">
+                            <th className="py-3.5 px-4 text-[9px]">Candidate</th>
+                            <th className="py-3.5 px-4 text-[9px]">College / Major</th>
+                            <th className="py-3.5 px-4 text-[9px]">Match Scores</th>
+                            <th className="py-3.5 px-4 text-[9px]">Pipeline State</th>
+                            <th className="py-3.5 px-4 text-[9px] text-right">Actions</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100 font-light">
+                        <tbody className="divide-y divide-white/5 font-light">
                           {l.applications.map((app: any) => (
-                            <tr key={app.id} className="hover:bg-gray-50">
+                            <tr key={app.id} className="hover:bg-white/[0.02] transition-colors">
                               <td className="py-4 px-4">
-                                <div className="font-bold text-black">{app.student.name}</div>
-                                <div className="text-[10px] text-black">{app.student.email}</div>
-                                {app.student.githubUrl && (
-                                  <a href={app.student.githubUrl} target="_blank" rel="noreferrer" className="text-[10px] text-blue-600 hover:underline mr-2">GitHub</a>
-                                )}
-                                {app.student.resumeUrl && (
-                                  <a href={app.student.resumeUrl} target="_blank" rel="noreferrer" className="text-[10px] text-blue-600 hover:underline">Resume</a>
-                                )}
+                                <div className="font-bold text-white">{app.student.name}</div>
+                                <div className="text-[10px] text-card-foreground">{app.student.email}</div>
+                                <div className="mt-1 flex space-x-2">
+                                  {app.student.githubUrl && (
+                                    <a href={app.student.githubUrl} target="_blank" rel="noreferrer" className="text-[9px] text-accent-cyan hover:underline uppercase tracking-wider">GitHub</a>
+                                  )}
+                                  {app.student.resumeUrl && (
+                                    <a href={app.student.resumeUrl} target="_blank" rel="noreferrer" className="text-[9px] text-accent-cyan hover:underline uppercase tracking-wider font-semibold">Resume</a>
+                                  )}
+                                </div>
                               </td>
                               <td className="py-4 px-4">
-                                <div>{app.student.college}</div>
-                                <div>{app.student.branch} (Class of {app.student.gradYear})</div>
-                                <div className="font-semibold text-[10px]">CGPA: {app.student.cgpa}</div>
+                                <div className="text-white">{app.student.college}</div>
+                                <div className="text-[10px] text-card-foreground">{app.student.branch} (Class of {app.student.gradYear})</div>
+                                <div className="font-semibold text-[9px] text-white">CGPA: {app.student.cgpa}</div>
                               </td>
                               <td className="py-4 px-4">
-                                <div className="font-bold text-blue-600">{app.matchScore}%</div>
+                                <div className="font-bold text-accent-purple">{app.matchScore}% Match</div>
                                 {app.nimScore !== null && app.nimScore !== undefined ? (
-                                  <div className="mt-1 text-[10px] font-bold text-black flex flex-col space-y-0.5">
+                                  <div className="mt-1.5 text-[9px] font-bold text-white flex flex-col space-y-0.5">
                                     <span>AI Score: {app.nimScore}%</span>
                                     <button
                                       type="button"
                                       onClick={() => setSelectedFeedback(app.nimFeedback)}
-                                      className="text-blue-600 hover:underline text-[9px] text-left uppercase tracking-wider"
+                                      className="text-accent-cyan hover:underline text-[9px] text-left uppercase tracking-wider font-semibold"
                                     >
                                       View AI Review
                                     </button>
@@ -640,37 +659,37 @@ export default function CompanyDashboard() {
                                     type="button"
                                     onClick={() => handleNIMEvaluate(app.id)}
                                     disabled={evaluatingId === app.id}
-                                    className="mt-1.5 block rounded border border-black bg-white px-2 py-0.5 text-[9px] font-semibold text-black hover:bg-blue-50 transition disabled:opacity-50"
+                                    className="mt-1.5 block rounded border border-white/10 bg-white/5 px-2 py-0.5 text-[9px] font-bold text-white hover:border-accent-cyan hover:text-accent-cyan transition disabled:opacity-50 uppercase cursor-pointer"
                                   >
                                     {evaluatingId === app.id ? "Analyzing..." : "NIM AI Match"}
                                   </button>
                                 )}
                               </td>
-                              <td className="py-4 px-4 font-semibold uppercase tracking-wider text-black">
+                              <td className="py-4 px-4 text-[10px] font-bold uppercase tracking-widest text-white">
                                 {app.status}
                               </td>
                               <td className="py-4 px-4 text-right space-y-1 sm:space-y-0 sm:space-x-1">
                                 <button
                                   onClick={() => handleUpdateApplicantStatus(l.id, app.id, "UNDER_REVIEW")}
-                                  className="border border-black text-[10px] font-semibold px-2 py-1 rounded hover:border-blue-600 hover:text-blue-600 transition"
+                                  className="border border-white/10 text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg hover:border-accent-cyan hover:text-accent-cyan transition cursor-pointer"
                                 >
                                   Review
                                 </button>
                                 <button
                                   onClick={() => handleUpdateApplicantStatus(l.id, app.id, "SHORTLISTED")}
-                                  className="border border-black text-[10px] font-semibold px-2 py-1 rounded hover:border-blue-600 hover:text-blue-600 transition"
+                                  className="border border-white/10 text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg hover:border-accent-cyan hover:text-accent-cyan transition cursor-pointer"
                                 >
                                   Shortlist
                                 </button>
                                 <button
                                   onClick={() => handleUpdateApplicantStatus(l.id, app.id, "OFFER_EXTENDED")}
-                                  className="border border-black text-[10px] font-semibold px-2 py-1 rounded hover:border-blue-600 hover:text-blue-600 transition"
+                                  className="border border-white/10 text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg hover:border-accent-cyan hover:text-accent-cyan transition cursor-pointer"
                                 >
                                   Offer
                                 </button>
                                 <button
                                   onClick={() => handleUpdateApplicantStatus(l.id, app.id, "REJECTED")}
-                                  className="border border-black text-[10px] font-semibold px-2 py-1 rounded hover:border-blue-600 hover:text-blue-600 transition"
+                                  className="border border-white/10 text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-lg hover:border-accent-pink hover:text-accent-pink transition cursor-pointer"
                                 >
                                   Reject
                                 </button>
@@ -689,24 +708,24 @@ export default function CompanyDashboard() {
       </main>
 
       {selectedFeedback && (
-        <div className="fixed inset-0 bg-black/55 flex items-center justify-center p-4 z-50 animate-fade-in">
-          <div className="bg-white border border-black max-w-lg w-full rounded p-6 shadow-xl flex flex-col space-y-4">
-            <div className="flex justify-between items-center border-b border-black pb-3">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-black">NVIDIA NIM AI Evaluation</h3>
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 animate-fade-in backdrop-blur-sm">
+          <div className="bg-[#111111] border border-white/15 max-w-lg w-full rounded-xl p-6 shadow-2xl flex flex-col space-y-4 glow-purple">
+            <div className="flex justify-between items-center border-b border-white/10 pb-3">
+              <h3 className="text-xs font-bold uppercase tracking-[0.15em] text-white">NVIDIA NIM AI Review</h3>
               <button
                 onClick={() => setSelectedFeedback(null)}
-                className="text-black hover:text-blue-600 font-bold text-lg focus:outline-none"
+                className="text-card-foreground hover:text-white font-bold text-lg focus:outline-none"
               >
                 ×
               </button>
             </div>
-            <div className="text-xs font-light text-black leading-relaxed whitespace-pre-line max-h-96 overflow-y-auto pr-2">
+            <div className="text-xs font-light text-card-foreground leading-relaxed whitespace-pre-line max-h-96 overflow-y-auto pr-2">
               {selectedFeedback}
             </div>
-            <div className="flex justify-end pt-3 border-t border-black">
+            <div className="flex justify-end pt-3 border-t border-white/10">
               <button
                 onClick={() => setSelectedFeedback(null)}
-                className="bg-black text-white px-4 py-2 text-xs font-semibold rounded hover:bg-blue-600 transition"
+                className="bg-white text-black hover:bg-accent-cyan hover:text-white px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition"
               >
                 Close
               </button>

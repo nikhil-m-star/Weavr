@@ -69,7 +69,6 @@ export default function StudentListings() {
 
       const data = await res.json();
       if (data.success) {
-        // Refresh feed
         await fetchData();
       } else {
         setError(data.error.message || "Failed to submit application");
@@ -92,7 +91,6 @@ export default function StudentListings() {
 
       const data = await res.json();
       if (data.success) {
-        // Refresh feed
         await fetchData();
       } else {
         setError(data.error.message || "Failed to withdraw application");
@@ -118,29 +116,35 @@ export default function StudentListings() {
 
   if (!isLoaded || loading) {
     return (
-      <div className="flex flex-1 items-center justify-center bg-white min-h-screen">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
+      <div className="flex flex-1 items-center justify-center bg-[#050505] min-h-screen">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-accent-cyan border-t-transparent"></div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col flex-1 bg-white min-h-screen">
+    <div className="flex flex-col flex-1 bg-[#050505] min-h-screen relative overflow-hidden">
+      {/* Background glow ambient */}
+      <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-accent-purple/5 rounded-full blur-[120px] pointer-events-none"></div>
+
       {/* Navigation Header */}
-      <nav className="border-b border-black py-4 px-6 lg:px-8 bg-white sticky top-0 z-50">
+      <nav className="glass-panel py-4 px-6 lg:px-8 sticky top-0 z-50 backdrop-blur-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-8">
-            <span className="text-2xl font-black text-black tracking-tight cursor-pointer" onClick={() => router.push("/")}>
+            <span
+              className="text-2xl font-black text-white tracking-[0.15em] uppercase cursor-pointer select-none"
+              onClick={() => router.push("/")}
+            >
               Weavr
             </span>
-            <span className="text-xs font-semibold text-blue-600 uppercase tracking-widest px-2 py-1 border border-blue-600 rounded">
-              Student Feed
+            <span className="text-[10px] font-bold text-accent-cyan uppercase tracking-widest px-2.5 py-0.5 border border-accent-cyan/30 rounded bg-accent-cyan/5">
+              Opportunities Feed
             </span>
           </div>
           <div className="flex items-center space-x-6">
             <button
               onClick={() => router.push("/profile")}
-              className="text-sm font-semibold text-black hover:text-blue-600 transition"
+              className="text-xs font-bold uppercase tracking-widest text-white hover:text-accent-cyan transition-colors"
             >
               My Profile
             </button>
@@ -152,24 +156,24 @@ export default function StudentListings() {
                     handleMarkNotificationsRead();
                   }
                 }}
-                className="relative text-sm font-semibold text-black hover:text-blue-600 transition flex items-center"
+                className="relative text-xs font-bold uppercase tracking-widest text-white hover:text-accent-cyan transition-colors flex items-center"
               >
-                Notifications
+                Inbox
                 {notifications.length > 0 && (
-                  <span className="absolute -top-1.5 -right-2 h-2 w-2 rounded-full bg-blue-600"></span>
+                  <span className="ml-1.5 h-2 w-2 rounded-full bg-accent-pink shadow-[0_0_10px_#EC4899]"></span>
                 )}
               </button>
               {showNotifications && (
-                <div className="absolute right-0 mt-3 w-80 rounded border border-black bg-white shadow-lg py-2 z-50">
-                  <div className="px-4 py-2 border-b border-black font-semibold text-xs uppercase tracking-wider text-black">
+                <div className="absolute right-0 mt-3 w-80 rounded border border-white/10 bg-[#111111] shadow-2xl py-2 z-50 animate-fade-in">
+                  <div className="px-4 py-2 border-b border-white/10 font-bold text-[10px] uppercase tracking-wider text-white">
                     Unread Notifications
                   </div>
                   {notifications.length === 0 ? (
-                    <div className="px-4 py-3 text-xs font-light text-black">No unread notifications</div>
+                    <div className="px-4 py-3 text-[10px] uppercase tracking-wider text-card-foreground">No updates</div>
                   ) : (
-                    <div className="divide-y divide-gray-100 max-h-60 overflow-y-auto">
+                    <div className="divide-y divide-white/5 max-h-60 overflow-y-auto">
                       {notifications.map((n) => (
-                        <div key={n.id} className="px-4 py-3 text-xs text-black font-light">
+                        <div key={n.id} className="px-4 py-3 text-[10px] text-card-foreground leading-relaxed font-light">
                           {n.message}
                         </div>
                       ))}
@@ -184,83 +188,84 @@ export default function StudentListings() {
       </nav>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto w-full px-6 lg:px-8 py-12 flex-1">
+      <main className="max-w-7xl mx-auto w-full px-6 lg:px-8 py-12 flex-1 z-10">
         {error && (
-          <div className="mb-8 border border-black bg-white text-blue-600 p-4 rounded text-sm font-semibold">
+          <div className="mb-8 border border-accent-pink/30 bg-accent-pink/5 text-accent-pink p-4 rounded text-xs uppercase tracking-wider font-semibold">
             {error}
           </div>
         )}
 
-        <h2 className="text-3xl font-black text-black border-b border-black pb-4 mb-8">
-          Available Listings
+        <h2 className="text-3xl font-black text-white uppercase tracking-[0.2em] border-b border-white/10 pb-4 mb-10 select-none">
+          Match Feed
         </h2>
 
         {listings.length === 0 ? (
-          <div className="text-center py-12 border border-dashed border-black rounded">
-            <p className="text-black font-light">No matching active listings found.</p>
+          <div className="text-center py-16 border border-dashed border-white/10 rounded-xl bg-[#111111]/30">
+            <p className="text-xs uppercase tracking-wider text-card-foreground font-light">No matching active positions found.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {listings.map((l) => {
-              // Find the application for this listing
               const isApplied = l.hasApplied;
               const appStatus = l.applicationStatus;
-              
-              // Define match score color
               const isHighMatch = l.matchScore >= 70;
 
               return (
                 <div
                   key={l.id}
-                  className="border border-black rounded p-6 flex flex-col justify-between hover:shadow-md transition-shadow duration-200"
+                  className="glass-card rounded-xl p-6 flex flex-col justify-between hover:border-accent-purple/35 transition-all duration-300"
                 >
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-xs font-semibold text-black uppercase tracking-wider">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-card-foreground uppercase tracking-widest">
                         {l.company?.name || "Acme Corp"}
                       </span>
                       <span
-                        className={`text-xs font-bold px-2 py-1 rounded border ${
-                          isHighMatch ? "border-blue-600 text-blue-600 bg-white" : "border-black text-black bg-white"
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${
+                          isHighMatch
+                            ? "border-accent-purple/40 text-accent-purple bg-accent-purple/5 shadow-[0_0_15px_rgba(124,58,237,0.15)]"
+                            : "border-white/15 text-white bg-white/5"
                         }`}
                       >
-                        {l.matchScore}% Match
+                        {l.matchScore}% AI Fit
                       </span>
                     </div>
 
-                    <h3 className="text-xl font-bold text-black mb-2">{l.title}</h3>
-                    <p className="text-xs font-light text-black mb-4 line-clamp-3">
-                      {l.description}
-                    </p>
+                    <div>
+                      <h3 className="text-lg font-bold text-white uppercase tracking-wide line-clamp-1">{l.title}</h3>
+                      <p className="text-[11px] font-light text-card-foreground leading-relaxed mt-2 line-clamp-3">
+                        {l.description}
+                      </p>
+                    </div>
 
-                    <div className="grid grid-cols-2 gap-4 mb-4 border-t border-b border-black py-3 my-4">
+                    <div className="grid grid-cols-2 gap-4 border-t border-b border-white/5 py-3.5 my-2">
                       <div>
-                        <span className="block text-[10px] font-semibold text-black uppercase tracking-wider">
+                        <span className="block text-[9px] font-semibold text-card-foreground uppercase tracking-widest">
                           Stipend
                         </span>
-                        <span className="text-sm font-bold text-black">
-                          ${l.stipend}/mo
+                        <span className="text-xs font-bold text-white tracking-wider">
+                          ${l.stipend.toLocaleString()}/mo
                         </span>
                       </div>
                       <div>
-                        <span className="block text-[10px] font-semibold text-black uppercase tracking-wider">
+                        <span className="block text-[9px] font-semibold text-card-foreground uppercase tracking-widest">
                           Location
                         </span>
-                        <span className="text-xs font-light text-black">
+                        <span className="text-[10px] font-bold text-white tracking-wider uppercase">
                           {l.location}
                         </span>
                       </div>
                     </div>
 
-                    <div className="mb-6">
-                      <span className="block text-[10px] font-semibold text-black uppercase tracking-wider mb-2">
-                        Required Skills
+                    <div>
+                      <span className="block text-[9px] font-semibold text-card-foreground uppercase tracking-widest mb-2">
+                        Required Core
                       </span>
-                      <div className="flex flex-wrap gap-1">
+                      <div className="flex flex-wrap gap-1.5">
                         {l.requiredSkills.map((rs: any) => (
                           <span
                             key={rs.skill.id}
-                            className="bg-black text-white text-[10px] px-2 py-0.5 rounded font-light"
+                            className="border border-white/10 bg-white/5 text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider text-white"
                           >
                             {rs.skill.name}
                           </span>
@@ -269,12 +274,12 @@ export default function StudentListings() {
                     </div>
                   </div>
 
-                  <div className="mt-6">
+                  <div className="mt-8 pt-4 border-t border-white/5">
                     {isApplied ? (
                       <div className="flex flex-col space-y-2">
-                        <div className="flex items-center justify-between border border-black rounded p-2 text-xs">
-                          <span className="font-semibold text-black">Status:</span>
-                          <span className="font-bold text-blue-600 uppercase tracking-wider">
+                        <div className="flex items-center justify-between border border-white/10 rounded-lg p-2.5 text-xs bg-white/5">
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-card-foreground">Application:</span>
+                          <span className="text-[10px] font-bold text-accent-cyan uppercase tracking-widest">
                             {appStatus}
                           </span>
                         </div>
@@ -282,26 +287,26 @@ export default function StudentListings() {
                           <button
                             onClick={() => handleWithdraw(l.applicationId)}
                             disabled={withdrawingId === l.applicationId}
-                            className="w-full border border-black hover:border-blue-600 hover:text-blue-600 text-xs font-semibold py-2 rounded transition disabled:opacity-50"
+                            className="w-full border border-white/10 hover:border-accent-pink hover:text-accent-pink text-[10px] font-bold uppercase tracking-widest py-2 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
                           >
-                            {withdrawingId === l.applicationId ? "Withdrawing..." : "Withdraw Application"}
+                            {withdrawingId === l.applicationId ? "Withdrawing..." : "Withdraw Apply"}
                           </button>
                         )}
                       </div>
                     ) : l.currentApplicants >= l.maxApplicants ? (
                       <button
                         disabled
-                        className="w-full bg-white border border-black text-black text-xs font-semibold py-3 rounded opacity-50 cursor-not-allowed"
+                        className="w-full bg-white/5 border border-white/5 text-card-foreground text-[10px] font-bold uppercase tracking-widest py-3 rounded-lg cursor-not-allowed opacity-40"
                       >
-                        Cap Reached
+                        Cap Overload
                       </button>
                     ) : (
                       <button
                         onClick={() => handleApply(l.id)}
                         disabled={applyingId === l.id}
-                        className="w-full bg-black hover:bg-blue-600 text-white text-xs font-semibold py-3 rounded transition"
+                        className="w-full bg-white text-black hover:bg-accent-cyan hover:text-white text-[10px] font-bold uppercase tracking-widest py-3 rounded-lg transition-all duration-200 cursor-pointer shadow-md"
                       >
-                        {applyingId === l.id ? "Applying..." : "Apply Now"}
+                        {applyingId === l.id ? "Submitting..." : "Apply Position"}
                       </button>
                     )}
                   </div>
