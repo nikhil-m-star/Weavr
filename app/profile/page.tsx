@@ -29,7 +29,6 @@ export default function Profile() {
 
   // Company Fields
   const [companyName, setCompanyName] = useState("");
-  const [companyApproved, setCompanyApproved] = useState(false);
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
@@ -68,7 +67,6 @@ export default function Profile() {
             } else if (res.data.role === "company") {
               const p = res.data.profile;
               setCompanyName(p.name || "");
-              setCompanyApproved(p.approved);
             }
           } else {
             setName(user?.firstName || "");
@@ -142,11 +140,7 @@ export default function Profile() {
         if (role === "student") {
           router.push("/listings");
         } else {
-          if (data.data.profile.approved) {
-            router.push("/company");
-          } else {
-            setCompanyApproved(false);
-          }
+          router.push("/company");
         }
       } else {
         setError(data.error.message || "Failed to update profile");

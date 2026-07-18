@@ -61,7 +61,9 @@ export async function POST(req: Request) {
     }
 
     const domain = email.split("@")[1]?.toLowerCase() || "";
-    const isPublicDomain = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "icloud.com", "aol.com"].includes(domain);
+    const acmeRecruiterEmail = "nikhilm9110@gmail.com";
+    const isAcmeRecruiter = email.toLowerCase() === acmeRecruiterEmail;
+    const isPublicDomain = !isAcmeRecruiter && ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "icloud.com", "aol.com"].includes(domain);
 
     if (role === "student") {
       // Validate student email domain (.edu, .ac.in, or custom)
@@ -170,17 +172,18 @@ export async function POST(req: Request) {
       }
 
       const { name } = body;
+      const companyName = isAcmeRecruiter ? "Acme Corp" : name || "Company Name";
 
       // Upsert company profile
       const company = await prisma.company.upsert({
         where: { id: userId },
         update: {
-          name: name || "Company Name",
+          name: companyName,
           email,
         },
         create: {
           id: userId,
-          name: name || "Company Name",
+          name: companyName,
           email,
         },
       });

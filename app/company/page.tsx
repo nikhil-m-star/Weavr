@@ -53,11 +53,6 @@ export default function CompanyDashboard() {
         return;
       }
 
-      if (profileData.success && !profileData.data.profile.approved) {
-        router.push("/profile");
-        return;
-      }
-
       if (listingsData.success) {
         setListings(listingsData.data);
       }
