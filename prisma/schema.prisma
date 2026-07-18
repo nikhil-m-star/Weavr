@@ -46,7 +46,6 @@ model Company {
   id        String    @id // Clerk user ID
   name      String
   email     String    @unique
-  approved  Boolean   @default(false)
   createdAt DateTime  @default(now())
   listings  Listing[]
 }

@@ -220,12 +220,6 @@ export default function Profile() {
           </div>
         )}
 
-        {role === "company" && !companyApproved && companyName && (
-          <div className="mt-6 bg-card p-4 rounded text-xs uppercase tracking-wider text-card-foreground font-light">
-            Your company account is pending administrator approval.
-          </div>
-        )}
-
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div className="glass-panel rounded p-8 space-y-6 bg-[#0c0c0c]">
             {role === "student" ? (

@@ -60,13 +60,12 @@ async function main() {
   }
 
   // 2. Seed Demo Company
-  console.log("Creating approved demo company...");
+  console.log("Creating demo company...");
   const company = await prisma.company.create({
     data: {
       id: "company_demo_clerk_id",
       name: "Acme Corp",
       email: "recruiting@acme.edu",
-      approved: true,
     },
   });
 

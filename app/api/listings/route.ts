@@ -187,10 +187,6 @@ export async function POST(req: Request) {
     return errorResponse("FORBIDDEN", "Only companies can create job listings.", 403);
   }
 
-  if (!company.approved) {
-    return errorResponse("FORBIDDEN", "Your company account is pending administrator approval.", 403);
-  }
-
   try {
     const body = await req.json();
     const {

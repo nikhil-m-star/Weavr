@@ -61,8 +61,7 @@ export async function POST(req: Request) {
     }
 
     const domain = email.split("@")[1]?.toLowerCase() || "";
-    const isNikhilRecruiter = email.toLowerCase() === "nikhilm9110@gmail.com";
-    const isPublicDomain = !isNikhilRecruiter && ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "icloud.com", "aol.com"].includes(domain);
+    const isPublicDomain = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "icloud.com", "aol.com"].includes(domain);
 
     if (role === "student") {
       // Validate student email domain (.edu, .ac.in, or custom)
@@ -172,36 +171,19 @@ export async function POST(req: Request) {
 
       const { name } = body;
 
-      // Upsert company profile (defaults to approved = false)
+      // Upsert company profile
       const company = await prisma.company.upsert({
         where: { id: userId },
         update: {
           name: name || "Company Name",
           email,
-          approved: isNikhilRecruiter ? true : undefined,
         },
         create: {
           id: userId,
           name: name || "Company Name",
           email,
-          approved: isNikhilRecruiter ? true : false,
         },
       });
-
-      if (isNikhilRecruiter && userId !== "company_demo_clerk_id") {
-        const demoCompany = await prisma.company.findUnique({
-          where: { id: "company_demo_clerk_id" },
-        });
-        if (demoCompany) {
-          await prisma.listing.updateMany({
-            where: { companyId: "company_demo_clerk_id" },
-            data: { companyId: userId },
-          });
-          await prisma.company.delete({
-            where: { id: "company_demo_clerk_id" },
-          });
-        }
-      }
 
       return successResponse({ role: "company", profile: company });
     }
