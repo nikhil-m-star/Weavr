@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { successResponse, errorResponse } from "@/lib/api-response";
 import { createNotification } from "@/lib/notifications";
+import { calculateMatchScore, evaluateApplicationWithNIM } from "@/lib/matching";
 
 export async function GET() {
   const { userId } = await auth();
@@ -48,6 +49,11 @@ export async function POST(req: Request) {
   // Check if student exists and is verified
   const student = await prisma.student.findUnique({
     where: { id: userId },
+    include: {
+      skills: {
+        include: { skill: true },
+      },
+    },
   });
 
   if (!student) {
@@ -93,7 +99,6 @@ export async function POST(req: Request) {
       }
 
       // Check if student already applied to this listing
-      // (This will also be enforced by the unique compound index, but checking here gives a cleaner error path)
       const existing = await tx.application.findUnique({
         where: {
           studentId_listingId: {
@@ -106,6 +111,15 @@ export async function POST(req: Request) {
       if (existing) {
         throw new Error("DUPLICATE_APPLICATION");
       }
+
+      // Fetch full listing with relations for initial local match scoring
+      const fullListing = await tx.listing.findUnique({
+        where: { id: listingId },
+        include: {
+          requiredSkills: { include: { skill: true } },
+          preferredSkills: { include: { skill: true } },
+        },
+      });
 
       // Create the application
       const application = await tx.application.create({
@@ -131,6 +145,11 @@ export async function POST(req: Request) {
       });
 
       return { application, listing, shouldClose };
+    });
+
+    // Trigger auto AI evaluation in the background asynchronously (no blocking)
+    evaluateApplicationWithNIM(result.application.id).catch((err) => {
+      console.error("Background NIM AI evaluation failed to trigger:", err);
     });
 
     // Trigger Notification to Company: New applicant

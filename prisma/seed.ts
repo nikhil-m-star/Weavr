@@ -86,6 +86,7 @@ async function main() {
       maxApplicants: 5,
       targetBranch: "Computer Science",
       targetGradYear: 2026,
+      status: "ACTIVE",
     },
   });
   
@@ -115,6 +116,7 @@ async function main() {
       maxApplicants: 3,
       targetBranch: "Computer Science",
       targetGradYear: 2026,
+      status: "ACTIVE",
     },
   });
 
@@ -144,6 +146,7 @@ async function main() {
       maxApplicants: 2,
       targetBranch: "Mathematics & Computing",
       targetGradYear: 2025,
+      status: "ACTIVE",
     },
   });
 

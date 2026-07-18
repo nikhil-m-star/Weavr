@@ -50,18 +50,22 @@ export async function GET(req: Request) {
             select: {
               id: true,
               status: true,
+              nimScore: true,
             },
           },
         },
       });
 
-      // Calculate match score in-memory in O(n) where n is the number of listings
+      // Calculate match score in-memory
       const scoredListings = listings.map((listing) => {
-        const score = calculateMatchScore(student, listing);
+        const hasApplied = listing.applications.length > 0;
+        const score = hasApplied
+          ? (listing.applications[0]?.nimScore ?? calculateMatchScore(student, listing))
+          : calculateMatchScore(student, listing);
         return {
           ...listing,
           matchScore: score,
-          hasApplied: listing.applications.length > 0,
+          hasApplied,
           applicationStatus: listing.applications[0]?.status || null,
           applicationId: listing.applications[0]?.id || null,
         };
