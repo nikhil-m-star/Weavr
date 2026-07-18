@@ -1,8 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
-import { prisma } from "../../../../lib/prisma";
-import { successResponse, errorResponse } from "../../../../lib/api-response";
-import { createNotification } from "../../../../lib/notifications";
-import { ApplicationStatus } from "../../../../prisma/generated-client/client";
+import { prisma } from "@/lib/prisma";
+import { successResponse, errorResponse } from "@/lib/api-response";
+import { createNotification } from "@/lib/notifications";
+import { ApplicationStatus } from "@/prisma/generated-client/client";
 
 export async function PATCH(
   req: Request,

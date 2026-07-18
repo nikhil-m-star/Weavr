@@ -1,5 +1,5 @@
-import { prisma } from "../../../lib/prisma";
-import { successResponse, errorResponse } from "../../../lib/api-response";
+import { prisma } from "@/lib/prisma";
+import { successResponse, errorResponse } from "@/lib/api-response";
 
 export async function GET() {
   try {

@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
-import { prisma } from "../../../lib/prisma";
-import { successResponse, errorResponse } from "../../../lib/api-response";
-import { createNotification } from "../../../lib/notifications";
+import { prisma } from "@/lib/prisma";
+import { successResponse, errorResponse } from "@/lib/api-response";
+import { createNotification } from "@/lib/notifications";
 
 export async function GET() {
   const { userId } = await auth();

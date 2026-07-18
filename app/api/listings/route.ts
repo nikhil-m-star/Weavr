@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
-import { prisma } from "../../../lib/prisma";
-import { successResponse, errorResponse } from "../../../lib/api-response";
-import { calculateMatchScore } from "../../../lib/matching";
+import { prisma } from "@/lib/prisma";
+import { successResponse, errorResponse } from "@/lib/api-response";
+import { calculateMatchScore } from "@/lib/matching";
 
 export async function GET(req: Request) {
   const { userId } = await auth();

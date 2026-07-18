@@ -1,6 +1,6 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { prisma } from "../../../lib/prisma";
-import { successResponse, errorResponse } from "../../../lib/api-response";
+import { prisma } from "@/lib/prisma";
+import { successResponse, errorResponse } from "@/lib/api-response";
 
 export async function GET() {
   const { userId } = await auth();
