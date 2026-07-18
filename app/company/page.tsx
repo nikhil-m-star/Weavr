@@ -106,20 +106,8 @@ export default function CompanyDashboard() {
 
       const data = await res.json();
       if (data.success) {
-        setSuccess("Job listing published successfully!");
-        setShowCreateForm(false);
-        // Clear form
-        setTitle("");
-        setDescription("");
-        setStipend("");
-        setLocation("REMOTE");
-        setDeadline("");
-        setMaxApplicants("");
-        setTargetBranch("");
-        setTargetGradYear("");
-        setReqSkills([]);
-        setPrefSkills([]);
-        await fetchData();
+        router.push("/");
+        return;
       } else {
         setError(data.error.message || "Failed to create job listing");
       }

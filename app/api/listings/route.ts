@@ -256,7 +256,7 @@ export async function POST(req: Request) {
       },
     });
 
-    return successResponse(listing, 21);
+    return successResponse(listing, 201);
   } catch (error: any) {
     console.error("Create listing error:", error);
     return errorResponse("SERVER_ERROR", error.message || "Failed to create listing", 500);
