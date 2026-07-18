@@ -55,7 +55,6 @@ async function runTest() {
       id: companyId,
       name: "Concurrency Test Corp",
       email: "concurrency@test.corp",
-      approved: true,
     },
   });
 
