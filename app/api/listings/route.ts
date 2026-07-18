@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { successResponse, errorResponse } from "@/lib/api-response";
 import { calculateMatchScore } from "@/lib/matching";
+import { createNotification } from "@/lib/notifications";
 
 export async function GET(req: Request) {
   const { userId } = await auth();
@@ -73,6 +74,31 @@ export async function GET(req: Request) {
 
       // Sort by match score descending
       scoredListings.sort((a, b) => b.matchScore - a.matchScore);
+
+      // Lazy matching notifications for scores >= 70
+      try {
+        const existingNotifications = await prisma.notification.findMany({
+          where: { recipientId: userId },
+          select: { message: true },
+        });
+
+        for (const l of scoredListings) {
+          if (l.matchScore >= 70 && !l.hasApplied) {
+            const hasBeenNotified = existingNotifications.some((n) =>
+              n.message.includes(`"${l.title}"`)
+            );
+            if (!hasBeenNotified) {
+              await createNotification(
+                "STUDENT",
+                userId,
+                `New matching position: "${l.title}" aligns with your profile (AI Fit: ${l.matchScore}%).`
+              );
+            }
+          }
+        }
+      } catch (notifErr) {
+        console.error("Failed to generate lazy notifications:", notifErr);
+      }
 
       return successResponse(scoredListings);
     }

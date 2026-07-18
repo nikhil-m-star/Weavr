@@ -56,10 +56,6 @@ export async function PATCH(
       },
     });
 
-    // If transitioned to ACTIVE, trigger notifications for students matching > 70 score (lazily or eagerly)
-    // Wait, the prompt says "new listing scoring >70 for a student (can be computed lazily on next listing fetch rather than eagerly for all students — document the tradeoff)"
-    // So we will compute it lazily during student feed fetching, or we can create notifications. Let's document this in DESIGN_DECISIONS.md.
-
     return successResponse(updatedListing);
   } catch (error: any) {
     console.error("Update listing status error:", error);

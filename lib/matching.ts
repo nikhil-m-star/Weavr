@@ -1,4 +1,4 @@
-import { prisma } from "./prisma";
+
 
 export function calculateCompleteness(student: any): number {
   const fields = [
@@ -68,6 +68,7 @@ export function calculateMatchScore(student: any, listing: any): number {
 }
 
 export async function evaluateApplicationWithNIM(applicationId: string) {
+  const { prisma } = await import("./prisma");
   const apiKey = process.env.NVIDIA_API_KEY;
   if (!apiKey) {
     console.error("NVIDIA NIM API Key not configured.");

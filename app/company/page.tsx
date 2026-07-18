@@ -558,11 +558,11 @@ export default function CompanyDashboard() {
               // Dynamically sort applications based on selected sorting mode
               const sortedApps = [...l.applications].sort((a, b) => {
                 if (sortByNIM) {
-                  const scoreA = a.nimScore !== null && a.nimScore !== undefined ? a.nimScore : -1;
-                  const scoreB = b.nimScore !== null && b.nimScore !== undefined ? b.nimScore : -1;
-                  return scoreB - scoreA;
+                  return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
                 } else {
-                  return b.matchScore - a.matchScore;
+                  const scoreA = a.nimScore !== null && a.nimScore !== undefined ? a.nimScore : (a.matchScore ?? -1);
+                  const scoreB = b.nimScore !== null && b.nimScore !== undefined ? b.nimScore : (b.matchScore ?? -1);
+                  return scoreB - scoreA;
                 }
               });
 
@@ -607,7 +607,7 @@ export default function CompanyDashboard() {
                               !sortByNIM ? "bg-white text-black" : "bg-[#0c0c0c] text-white hover:bg-white/5"
                             }`}
                           >
-                            Match Score
+                            AI Match
                           </button>
                           <button
                             onClick={() => setSortByNIM(true)}
@@ -615,7 +615,7 @@ export default function CompanyDashboard() {
                               sortByNIM ? "bg-white text-black" : "bg-[#0c0c0c] text-white hover:bg-white/5"
                             }`}
                           >
-                            AI Score
+                            Recent
                           </button>
                           <span className="text-card-foreground mx-1">|</span>
                           <button
@@ -663,10 +663,9 @@ export default function CompanyDashboard() {
                                   <div className="font-bold text-[8px] text-white">GPA: {app.student.cgpa}</div>
                                 </td>
                                 <td className="py-4 px-4">
-                                  <div className="font-bold text-white">{app.matchScore}% Algorithm</div>
                                   {app.nimScore !== null && app.nimScore !== undefined ? (
-                                    <div className="mt-1 text-[8px] font-bold text-white flex flex-col space-y-0.5">
-                                      <span>AI Score: {app.nimScore}%</span>
+                                    <div className="font-bold text-white flex flex-col space-y-0.5">
+                                      <span>{app.nimScore}% AI Match</span>
                                       <button
                                         type="button"
                                         onClick={() => setSelectedFeedback(app.nimFeedback)}
@@ -680,9 +679,9 @@ export default function CompanyDashboard() {
                                       type="button"
                                       onClick={() => handleNIMEvaluate(app.id)}
                                       disabled={evaluatingId === app.id}
-                                      className="mt-1.5 block rounded bg-white/10 px-2 py-0.5 text-[8px] font-bold text-white hover:bg-white hover:text-black transition disabled:opacity-50 uppercase cursor-pointer"
+                                      className="block rounded bg-white/10 px-2 py-0.5 text-[8px] font-bold text-white hover:bg-white hover:text-black transition disabled:opacity-50 uppercase cursor-pointer"
                                     >
-                                      {evaluatingId === app.id ? "Analyzing" : "NIM AI Match"}
+                                      {evaluatingId === app.id ? "Analyzing" : "Run AI Evaluation"}
                                     </button>
                                   )}
                                 </td>
