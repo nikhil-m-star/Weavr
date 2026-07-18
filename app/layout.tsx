@@ -1,6 +1,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
+import SiteAuthBar from "@/components/site-auth-bar";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -26,6 +27,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-black text-white">
         <ClerkProvider>
+          <SiteAuthBar />
           {children}
         </ClerkProvider>
       </body>
