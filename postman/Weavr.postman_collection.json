@@ -1,0 +1,390 @@
+{
+  "info": {
+    "_postman_id": "a9a3b8c4-e8d1-4f1b-9a4c-59db23c1d93b",
+    "name": "Weavr Talent Matching API",
+    "description": "Postman collection covering all backend API endpoints for Weavr",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/profile",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Create Student Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"student\",\n  \"name\": \"Jane Doe\",\n  \"college\": \"University of Engineering\",\n  \"branch\": \"Computer Science\",\n  \"gradYear\": 2026,\n  \"cgpa\": 9.25,\n  \"githubUrl\": \"https://github.com/janedoe\",\n  \"linkedinUrl\": \"https://linkedin.com/in/janedoe\",\n  \"bio\": \"Passionate about cloud architecture and distributed databases.\",\n  \"resumeUrl\": \"https://example.com/resumes/janedoe.pdf\",\n  \"skills\": [\"react\", \"typescript\", \"postgresql\", \"docker\"]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/profile",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Create Company Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"company\",\n  \"name\": \"Stark Industries\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/profile",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "profile"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Skills",
+      "item": [
+        {
+          "name": "Get Seeded Skills",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/skills",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "skills"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listings",
+      "item": [
+        {
+          "name": "Get Listings (Student Feed / Company Own)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/listings",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "listings"]
+            }
+          }
+        },
+        {
+          "name": "Get Single Listing",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/listings/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "listings", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "listing_uuid_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Listing (DRAFT)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Cloud Engineering Intern\",\n  \"description\": \"Join our infrastructure team to deploy and orchestrate serverless services.\",\n  \"stipend\": 3500,\n  \"location\": \"REMOTE\",\n  \"deadline\": \"2026-08-30T23:59:59Z\",\n  \"maxApplicants\": 15,\n  \"targetBranch\": \"Computer Science\",\n  \"targetGradYear\": 2026,\n  \"requiredSkills\": [\"docker\", \"node.js\"],\n  \"preferredSkills\": [\"postgresql\", \"typescript\"]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/listings",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "listings"]
+            }
+          }
+        },
+        {
+          "name": "Update Listing",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stipend\": 4000,\n  \"maxApplicants\": 20\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/listings/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "listings", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "listing_uuid_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Listing Status (DRAFT -> ACTIVE -> CLOSED)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/listings/:id/status",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "listings", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "listing_uuid_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Applications",
+      "item": [
+        {
+          "name": "Get Student Applications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/applications",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "applications"]
+            }
+          }
+        },
+        {
+          "name": "Submit Application (Student)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"listingId\": \"listing_uuid_here\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/applications",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "applications"]
+            }
+          }
+        },
+        {
+          "name": "Update Applicant Status (Company)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SHORTLISTED\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/applications/:id/status",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "applications", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "application_uuid_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Withdraw Application (Student)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/applications/:id/withdraw",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "applications", ":id", "withdraw"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "application_uuid_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Bulk Status Update Applicants (Company)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"targetStatus\": \"UNDER_REVIEW\",\n  \"filterStatus\": \"SUBMITTED\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/listings/:id/applications/bulk",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "listings", ":id", "applications", "bulk"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "listing_uuid_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Get Notifications (Unread / Read)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/notifications?read=false&page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "notifications"],
+              "query": [
+                {
+                  "key": "read",
+                  "value": "false"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mark Notifications Read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": [\"notification_uuid_1\", \"notification_uuid_2\"]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/notifications/read",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "notifications", "read"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

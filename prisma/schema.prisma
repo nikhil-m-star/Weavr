@@ -4,6 +4,7 @@ datasource db {
 
 generator client {
   provider = "prisma-client"
+  output   = "./generated-client"
 }
 
 model Student {
@@ -77,6 +78,8 @@ model Listing {
   autoClosedAt      DateTime?
   closedReason      String?
   createdAt         DateTime                @default(now())
+  targetBranch      String?
+  targetGradYear    Int?
   requiredSkills    ListingRequiredSkill[]
   preferredSkills   ListingPreferredSkill[]
   applications      Application[]

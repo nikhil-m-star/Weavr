@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Weavr — Talent Matching Platform
 
-## Getting Started
+Weavr is a minimalist talent matching platform built with Next.js 16, Prisma 7, Neon PostgreSQL, and Clerk authentication.
 
-First, run the development server:
+## Local Setup (Under 5 Minutes)
+
+### 1. Prerequisites & Environment Variables
+Ensure you have Node.js installed. Create or configure your `.env.local` file in the root directory. You must include the following keys:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Clerk Keys (provided during clerk init)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+
+# Neon PostgreSQL Database Connection URL
+DATABASE_URL="postgresql://neondb_owner:npg_hTgV3vPy2dNW@ep-polished-smoke-azg6kai7-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install Dependencies
+Run the following command to install all packages:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Generate Prisma Client & Run Migrations
+Initialize and sync the Neon database tables:
+```bash
+npx prisma migrate dev --name init
+npx prisma generate
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Seed the Database
+Populate initial skills (React, TypeScript, Docker, etc.) and a demo approved company:
+```bash
+npx tsx prisma/seed.ts
+```
 
-## Learn More
+### 5. Start Development Server
+Start the local server:
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Open [http://localhost:3000](http://localhost:3000) to test the application!
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Testing Concurrency
+To run the automated concurrency race condition test script:
+```bash
+npx tsx scripts/test-concurrency.ts
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This verifies the safety of application submissions under high concurrent load using PostgreSQL row locking (`FOR UPDATE`).
