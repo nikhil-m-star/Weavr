@@ -123,6 +123,9 @@ model Application {
   updatedAt DateTime          @updatedAt
   student   Student           @relation(fields: [studentId], references: [id], onDelete: Cascade)
   listing   Listing           @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  nimScore       Float?
+  nimFeedback    String?
+  nimEvaluatedAt DateTime?
 
   @@unique([studentId, listingId])
   @@index([studentId])

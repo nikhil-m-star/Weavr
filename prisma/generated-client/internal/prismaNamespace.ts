@@ -1206,7 +1206,10 @@ export const ApplicationScalarFieldEnum = {
   listingId: 'listingId',
   status: 'status',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  nimScore: 'nimScore',
+  nimFeedback: 'nimFeedback',
+  nimEvaluatedAt: 'nimEvaluatedAt'
 } as const
 
 export type ApplicationScalarFieldEnum = (typeof ApplicationScalarFieldEnum)[keyof typeof ApplicationScalarFieldEnum]

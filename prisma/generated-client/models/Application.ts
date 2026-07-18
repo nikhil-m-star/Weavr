@@ -20,8 +20,18 @@ export type ApplicationModel = runtime.Types.Result.DefaultSelection<Prisma.$App
 
 export type AggregateApplication = {
   _count: ApplicationCountAggregateOutputType | null
+  _avg: ApplicationAvgAggregateOutputType | null
+  _sum: ApplicationSumAggregateOutputType | null
   _min: ApplicationMinAggregateOutputType | null
   _max: ApplicationMaxAggregateOutputType | null
+}
+
+export type ApplicationAvgAggregateOutputType = {
+  nimScore: number | null
+}
+
+export type ApplicationSumAggregateOutputType = {
+  nimScore: number | null
 }
 
 export type ApplicationMinAggregateOutputType = {
@@ -31,6 +41,9 @@ export type ApplicationMinAggregateOutputType = {
   status: $Enums.ApplicationStatus | null
   createdAt: Date | null
   updatedAt: Date | null
+  nimScore: number | null
+  nimFeedback: string | null
+  nimEvaluatedAt: Date | null
 }
 
 export type ApplicationMaxAggregateOutputType = {
@@ -40,6 +53,9 @@ export type ApplicationMaxAggregateOutputType = {
   status: $Enums.ApplicationStatus | null
   createdAt: Date | null
   updatedAt: Date | null
+  nimScore: number | null
+  nimFeedback: string | null
+  nimEvaluatedAt: Date | null
 }
 
 export type ApplicationCountAggregateOutputType = {
@@ -49,9 +65,20 @@ export type ApplicationCountAggregateOutputType = {
   status: number
   createdAt: number
   updatedAt: number
+  nimScore: number
+  nimFeedback: number
+  nimEvaluatedAt: number
   _all: number
 }
 
+
+export type ApplicationAvgAggregateInputType = {
+  nimScore?: true
+}
+
+export type ApplicationSumAggregateInputType = {
+  nimScore?: true
+}
 
 export type ApplicationMinAggregateInputType = {
   id?: true
@@ -60,6 +87,9 @@ export type ApplicationMinAggregateInputType = {
   status?: true
   createdAt?: true
   updatedAt?: true
+  nimScore?: true
+  nimFeedback?: true
+  nimEvaluatedAt?: true
 }
 
 export type ApplicationMaxAggregateInputType = {
@@ -69,6 +99,9 @@ export type ApplicationMaxAggregateInputType = {
   status?: true
   createdAt?: true
   updatedAt?: true
+  nimScore?: true
+  nimFeedback?: true
+  nimEvaluatedAt?: true
 }
 
 export type ApplicationCountAggregateInputType = {
@@ -78,6 +111,9 @@ export type ApplicationCountAggregateInputType = {
   status?: true
   createdAt?: true
   updatedAt?: true
+  nimScore?: true
+  nimFeedback?: true
+  nimEvaluatedAt?: true
   _all?: true
 }
 
@@ -119,6 +155,18 @@ export type ApplicationAggregateArgs<ExtArgs extends runtime.Types.Extensions.In
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ApplicationAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ApplicationSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ApplicationMinAggregateInputType
@@ -149,6 +197,8 @@ export type ApplicationGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   _count?: ApplicationCountAggregateInputType | true
+  _avg?: ApplicationAvgAggregateInputType
+  _sum?: ApplicationSumAggregateInputType
   _min?: ApplicationMinAggregateInputType
   _max?: ApplicationMaxAggregateInputType
 }
@@ -160,7 +210,12 @@ export type ApplicationGroupByOutputType = {
   status: $Enums.ApplicationStatus
   createdAt: Date
   updatedAt: Date
+  nimScore: number | null
+  nimFeedback: string | null
+  nimEvaluatedAt: Date | null
   _count: ApplicationCountAggregateOutputType | null
+  _avg: ApplicationAvgAggregateOutputType | null
+  _sum: ApplicationSumAggregateOutputType | null
   _min: ApplicationMinAggregateOutputType | null
   _max: ApplicationMaxAggregateOutputType | null
 }
@@ -190,6 +245,9 @@ export type ApplicationWhereInput = {
   status?: Prisma.EnumApplicationStatusFilter<"Application"> | $Enums.ApplicationStatus
   createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string
+  nimScore?: Prisma.FloatNullableFilter<"Application"> | number | null
+  nimFeedback?: Prisma.StringNullableFilter<"Application"> | string | null
+  nimEvaluatedAt?: Prisma.DateTimeNullableFilter<"Application"> | Date | string | null
   student?: Prisma.XOR<Prisma.StudentScalarRelationFilter, Prisma.StudentWhereInput>
   listing?: Prisma.XOR<Prisma.ListingScalarRelationFilter, Prisma.ListingWhereInput>
 }
@@ -201,6 +259,9 @@ export type ApplicationOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  nimScore?: Prisma.SortOrderInput | Prisma.SortOrder
+  nimFeedback?: Prisma.SortOrderInput | Prisma.SortOrder
+  nimEvaluatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   student?: Prisma.StudentOrderByWithRelationInput
   listing?: Prisma.ListingOrderByWithRelationInput
 }
@@ -216,6 +277,9 @@ export type ApplicationWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumApplicationStatusFilter<"Application"> | $Enums.ApplicationStatus
   createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string
+  nimScore?: Prisma.FloatNullableFilter<"Application"> | number | null
+  nimFeedback?: Prisma.StringNullableFilter<"Application"> | string | null
+  nimEvaluatedAt?: Prisma.DateTimeNullableFilter<"Application"> | Date | string | null
   student?: Prisma.XOR<Prisma.StudentScalarRelationFilter, Prisma.StudentWhereInput>
   listing?: Prisma.XOR<Prisma.ListingScalarRelationFilter, Prisma.ListingWhereInput>
 }, "id" | "studentId_listingId">
@@ -227,9 +291,14 @@ export type ApplicationOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  nimScore?: Prisma.SortOrderInput | Prisma.SortOrder
+  nimFeedback?: Prisma.SortOrderInput | Prisma.SortOrder
+  nimEvaluatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ApplicationCountOrderByAggregateInput
+  _avg?: Prisma.ApplicationAvgOrderByAggregateInput
   _max?: Prisma.ApplicationMaxOrderByAggregateInput
   _min?: Prisma.ApplicationMinOrderByAggregateInput
+  _sum?: Prisma.ApplicationSumOrderByAggregateInput
 }
 
 export type ApplicationScalarWhereWithAggregatesInput = {
@@ -242,6 +311,9 @@ export type ApplicationScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumApplicationStatusWithAggregatesFilter<"Application"> | $Enums.ApplicationStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Application"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Application"> | Date | string
+  nimScore?: Prisma.FloatNullableWithAggregatesFilter<"Application"> | number | null
+  nimFeedback?: Prisma.StringNullableWithAggregatesFilter<"Application"> | string | null
+  nimEvaluatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Application"> | Date | string | null
 }
 
 export type ApplicationCreateInput = {
@@ -249,6 +321,9 @@ export type ApplicationCreateInput = {
   status?: $Enums.ApplicationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  nimScore?: number | null
+  nimFeedback?: string | null
+  nimEvaluatedAt?: Date | string | null
   student: Prisma.StudentCreateNestedOneWithoutApplicationsInput
   listing: Prisma.ListingCreateNestedOneWithoutApplicationsInput
 }
@@ -260,6 +335,9 @@ export type ApplicationUncheckedCreateInput = {
   status?: $Enums.ApplicationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  nimScore?: number | null
+  nimFeedback?: string | null
+  nimEvaluatedAt?: Date | string | null
 }
 
 export type ApplicationUpdateInput = {
@@ -267,6 +345,9 @@ export type ApplicationUpdateInput = {
   status?: Prisma.EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nimScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  nimFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nimEvaluatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   student?: Prisma.StudentUpdateOneRequiredWithoutApplicationsNestedInput
   listing?: Prisma.ListingUpdateOneRequiredWithoutApplicationsNestedInput
 }
@@ -278,6 +359,9 @@ export type ApplicationUncheckedUpdateInput = {
   status?: Prisma.EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nimScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  nimFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nimEvaluatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ApplicationCreateManyInput = {
@@ -287,6 +371,9 @@ export type ApplicationCreateManyInput = {
   status?: $Enums.ApplicationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  nimScore?: number | null
+  nimFeedback?: string | null
+  nimEvaluatedAt?: Date | string | null
 }
 
 export type ApplicationUpdateManyMutationInput = {
@@ -294,6 +381,9 @@ export type ApplicationUpdateManyMutationInput = {
   status?: Prisma.EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nimScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  nimFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nimEvaluatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ApplicationUncheckedUpdateManyInput = {
@@ -303,6 +393,9 @@ export type ApplicationUncheckedUpdateManyInput = {
   status?: Prisma.EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nimScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  nimFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nimEvaluatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ApplicationListRelationFilter = {
@@ -327,6 +420,13 @@ export type ApplicationCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  nimScore?: Prisma.SortOrder
+  nimFeedback?: Prisma.SortOrder
+  nimEvaluatedAt?: Prisma.SortOrder
+}
+
+export type ApplicationAvgOrderByAggregateInput = {
+  nimScore?: Prisma.SortOrder
 }
 
 export type ApplicationMaxOrderByAggregateInput = {
@@ -336,6 +436,9 @@ export type ApplicationMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  nimScore?: Prisma.SortOrder
+  nimFeedback?: Prisma.SortOrder
+  nimEvaluatedAt?: Prisma.SortOrder
 }
 
 export type ApplicationMinOrderByAggregateInput = {
@@ -345,6 +448,13 @@ export type ApplicationMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  nimScore?: Prisma.SortOrder
+  nimFeedback?: Prisma.SortOrder
+  nimEvaluatedAt?: Prisma.SortOrder
+}
+
+export type ApplicationSumOrderByAggregateInput = {
+  nimScore?: Prisma.SortOrder
 }
 
 export type ApplicationCreateNestedManyWithoutStudentInput = {
@@ -440,6 +550,9 @@ export type ApplicationCreateWithoutStudentInput = {
   status?: $Enums.ApplicationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  nimScore?: number | null
+  nimFeedback?: string | null
+  nimEvaluatedAt?: Date | string | null
   listing: Prisma.ListingCreateNestedOneWithoutApplicationsInput
 }
 
@@ -449,6 +562,9 @@ export type ApplicationUncheckedCreateWithoutStudentInput = {
   status?: $Enums.ApplicationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  nimScore?: number | null
+  nimFeedback?: string | null
+  nimEvaluatedAt?: Date | string | null
 }
 
 export type ApplicationCreateOrConnectWithoutStudentInput = {
@@ -487,6 +603,9 @@ export type ApplicationScalarWhereInput = {
   status?: Prisma.EnumApplicationStatusFilter<"Application"> | $Enums.ApplicationStatus
   createdAt?: Prisma.DateTimeFilter<"Application"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Application"> | Date | string
+  nimScore?: Prisma.FloatNullableFilter<"Application"> | number | null
+  nimFeedback?: Prisma.StringNullableFilter<"Application"> | string | null
+  nimEvaluatedAt?: Prisma.DateTimeNullableFilter<"Application"> | Date | string | null
 }
 
 export type ApplicationCreateWithoutListingInput = {
@@ -494,6 +613,9 @@ export type ApplicationCreateWithoutListingInput = {
   status?: $Enums.ApplicationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  nimScore?: number | null
+  nimFeedback?: string | null
+  nimEvaluatedAt?: Date | string | null
   student: Prisma.StudentCreateNestedOneWithoutApplicationsInput
 }
 
@@ -503,6 +625,9 @@ export type ApplicationUncheckedCreateWithoutListingInput = {
   status?: $Enums.ApplicationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  nimScore?: number | null
+  nimFeedback?: string | null
+  nimEvaluatedAt?: Date | string | null
 }
 
 export type ApplicationCreateOrConnectWithoutListingInput = {
@@ -537,6 +662,9 @@ export type ApplicationCreateManyStudentInput = {
   status?: $Enums.ApplicationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  nimScore?: number | null
+  nimFeedback?: string | null
+  nimEvaluatedAt?: Date | string | null
 }
 
 export type ApplicationUpdateWithoutStudentInput = {
@@ -544,6 +672,9 @@ export type ApplicationUpdateWithoutStudentInput = {
   status?: Prisma.EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nimScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  nimFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nimEvaluatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   listing?: Prisma.ListingUpdateOneRequiredWithoutApplicationsNestedInput
 }
 
@@ -553,6 +684,9 @@ export type ApplicationUncheckedUpdateWithoutStudentInput = {
   status?: Prisma.EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nimScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  nimFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nimEvaluatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ApplicationUncheckedUpdateManyWithoutStudentInput = {
@@ -561,6 +695,9 @@ export type ApplicationUncheckedUpdateManyWithoutStudentInput = {
   status?: Prisma.EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nimScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  nimFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nimEvaluatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ApplicationCreateManyListingInput = {
@@ -569,6 +706,9 @@ export type ApplicationCreateManyListingInput = {
   status?: $Enums.ApplicationStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  nimScore?: number | null
+  nimFeedback?: string | null
+  nimEvaluatedAt?: Date | string | null
 }
 
 export type ApplicationUpdateWithoutListingInput = {
@@ -576,6 +716,9 @@ export type ApplicationUpdateWithoutListingInput = {
   status?: Prisma.EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nimScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  nimFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nimEvaluatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   student?: Prisma.StudentUpdateOneRequiredWithoutApplicationsNestedInput
 }
 
@@ -585,6 +728,9 @@ export type ApplicationUncheckedUpdateWithoutListingInput = {
   status?: Prisma.EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nimScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  nimFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nimEvaluatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ApplicationUncheckedUpdateManyWithoutListingInput = {
@@ -593,6 +739,9 @@ export type ApplicationUncheckedUpdateManyWithoutListingInput = {
   status?: Prisma.EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nimScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  nimFeedback?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nimEvaluatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -604,6 +753,9 @@ export type ApplicationSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  nimScore?: boolean
+  nimFeedback?: boolean
+  nimEvaluatedAt?: boolean
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
   listing?: boolean | Prisma.ListingDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["application"]>
@@ -615,6 +767,9 @@ export type ApplicationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  nimScore?: boolean
+  nimFeedback?: boolean
+  nimEvaluatedAt?: boolean
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
   listing?: boolean | Prisma.ListingDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["application"]>
@@ -626,6 +781,9 @@ export type ApplicationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  nimScore?: boolean
+  nimFeedback?: boolean
+  nimEvaluatedAt?: boolean
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
   listing?: boolean | Prisma.ListingDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["application"]>
@@ -637,9 +795,12 @@ export type ApplicationSelectScalar = {
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  nimScore?: boolean
+  nimFeedback?: boolean
+  nimEvaluatedAt?: boolean
 }
 
-export type ApplicationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "studentId" | "listingId" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["application"]>
+export type ApplicationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "studentId" | "listingId" | "status" | "createdAt" | "updatedAt" | "nimScore" | "nimFeedback" | "nimEvaluatedAt", ExtArgs["result"]["application"]>
 export type ApplicationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   student?: boolean | Prisma.StudentDefaultArgs<ExtArgs>
   listing?: boolean | Prisma.ListingDefaultArgs<ExtArgs>
@@ -666,6 +827,9 @@ export type $ApplicationPayload<ExtArgs extends runtime.Types.Extensions.Interna
     status: $Enums.ApplicationStatus
     createdAt: Date
     updatedAt: Date
+    nimScore: number | null
+    nimFeedback: string | null
+    nimEvaluatedAt: Date | null
   }, ExtArgs["result"]["application"]>
   composites: {}
 }
@@ -1097,6 +1261,9 @@ export interface ApplicationFieldRefs {
   readonly status: Prisma.FieldRef<"Application", 'ApplicationStatus'>
   readonly createdAt: Prisma.FieldRef<"Application", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Application", 'DateTime'>
+  readonly nimScore: Prisma.FieldRef<"Application", 'Float'>
+  readonly nimFeedback: Prisma.FieldRef<"Application", 'String'>
+  readonly nimEvaluatedAt: Prisma.FieldRef<"Application", 'DateTime'>
 }
     
 

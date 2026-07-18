@@ -15,6 +15,8 @@ export default function CompanyDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [evaluatingId, setEvaluatingId] = useState<string | null>(null);
+  const [selectedFeedback, setSelectedFeedback] = useState<string | null>(null);
 
   // Listing creation form state
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -196,6 +198,30 @@ export default function CompanyDashboard() {
       }
     } catch (err) {
       setError("An unexpected error occurred.");
+    }
+  };
+
+  const handleNIMEvaluate = async (applicationId: string) => {
+    setEvaluatingId(applicationId);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const res = await fetch(`/api/applications/${applicationId}/evaluate`, {
+        method: "POST",
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setSuccess("NVIDIA NIM AI evaluation complete!");
+        await fetchData();
+      } else {
+        setError(data.error.message || "NIM evaluation failed");
+      }
+    } catch (err) {
+      setError("An unexpected error occurred during AI evaluation.");
+    } finally {
+      setEvaluatingId(null);
     }
   };
 
@@ -596,8 +622,29 @@ export default function CompanyDashboard() {
                                 <div>{app.student.branch} (Class of {app.student.gradYear})</div>
                                 <div className="font-semibold text-[10px]">CGPA: {app.student.cgpa}</div>
                               </td>
-                              <td className="py-4 px-4 font-bold text-blue-600">
-                                {app.matchScore}%
+                              <td className="py-4 px-4">
+                                <div className="font-bold text-blue-600">{app.matchScore}%</div>
+                                {app.nimScore !== null && app.nimScore !== undefined ? (
+                                  <div className="mt-1 text-[10px] font-bold text-black flex flex-col space-y-0.5">
+                                    <span>AI Score: {app.nimScore}%</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => setSelectedFeedback(app.nimFeedback)}
+                                      className="text-blue-600 hover:underline text-[9px] text-left uppercase tracking-wider"
+                                    >
+                                      View AI Review
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleNIMEvaluate(app.id)}
+                                    disabled={evaluatingId === app.id}
+                                    className="mt-1.5 block rounded border border-black bg-white px-2 py-0.5 text-[9px] font-semibold text-black hover:bg-blue-50 transition disabled:opacity-50"
+                                  >
+                                    {evaluatingId === app.id ? "Analyzing..." : "NIM AI Match"}
+                                  </button>
+                                )}
                               </td>
                               <td className="py-4 px-4 font-semibold uppercase tracking-wider text-black">
                                 {app.status}
@@ -640,6 +687,33 @@ export default function CompanyDashboard() {
           </div>
         )}
       </main>
+
+      {selectedFeedback && (
+        <div className="fixed inset-0 bg-black/55 flex items-center justify-center p-4 z-50 animate-fade-in">
+          <div className="bg-white border border-black max-w-lg w-full rounded p-6 shadow-xl flex flex-col space-y-4">
+            <div className="flex justify-between items-center border-b border-black pb-3">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-black">NVIDIA NIM AI Evaluation</h3>
+              <button
+                onClick={() => setSelectedFeedback(null)}
+                className="text-black hover:text-blue-600 font-bold text-lg focus:outline-none"
+              >
+                ×
+              </button>
+            </div>
+            <div className="text-xs font-light text-black leading-relaxed whitespace-pre-line max-h-96 overflow-y-auto pr-2">
+              {selectedFeedback}
+            </div>
+            <div className="flex justify-end pt-3 border-t border-black">
+              <button
+                onClick={() => setSelectedFeedback(null)}
+                className="bg-black text-white px-4 py-2 text-xs font-semibold rounded hover:bg-blue-600 transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
