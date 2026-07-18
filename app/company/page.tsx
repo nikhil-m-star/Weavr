@@ -15,9 +15,7 @@ export default function CompanyDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [evaluatingId, setEvaluatingId] = useState<string | null>(null);
-  const [selectedFeedback, setSelectedFeedback] = useState<string | null>(null);
-  const [sortByNIM, setSortByNIM] = useState<boolean>(false);
+  const [sortByRecent, setSortByRecent] = useState<boolean>(false);
 
   // Listing creation form state
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -182,30 +180,6 @@ export default function CompanyDashboard() {
       }
     } catch (err) {
       setError("An unexpected error occurred.");
-    }
-  };
-
-  const handleNIMEvaluate = async (applicationId: string) => {
-    setEvaluatingId(applicationId);
-    setError(null);
-    setSuccess(null);
-
-    try {
-      const res = await fetch(`/api/applications/${applicationId}/evaluate`, {
-        method: "POST",
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        setSuccess("NVIDIA NIM AI evaluation complete!");
-        await fetchData();
-      } else {
-        setError(data.error.message || "NIM evaluation failed");
-      }
-    } catch (err) {
-      setError("An unexpected error occurred during AI evaluation.");
-    } finally {
-      setEvaluatingId(null);
     }
   };
 
@@ -540,13 +514,11 @@ export default function CompanyDashboard() {
             {listings.map((l) => {
               // Dynamically sort applications based on selected sorting mode
               const sortedApps = [...l.applications].sort((a, b) => {
-                if (sortByNIM) {
+                if (sortByRecent) {
                   return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-                } else {
-                  const scoreA = a.nimScore !== null && a.nimScore !== undefined ? a.nimScore : (a.matchScore ?? -1);
-                  const scoreB = b.nimScore !== null && b.nimScore !== undefined ? b.nimScore : (b.matchScore ?? -1);
-                  return scoreB - scoreA;
                 }
+
+                return (b.matchScore ?? -1) - (a.matchScore ?? -1);
               });
 
               return (
@@ -585,17 +557,17 @@ export default function CompanyDashboard() {
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="text-[9px] font-light text-card-foreground uppercase tracking-wider">Sort:</span>
                           <button
-                            onClick={() => setSortByNIM(false)}
+                            onClick={() => setSortByRecent(false)}
                             className={`px-3 py-1 text-[8px] font-bold uppercase tracking-wider rounded transition cursor-pointer ${
-                              !sortByNIM ? "bg-white text-black" : "bg-[#0c0c0c] text-white hover:bg-white/5"
+                              !sortByRecent ? "bg-white text-black" : "bg-[#0c0c0c] text-white hover:bg-white/5"
                             }`}
                           >
-                            AI Match
+                            Match Score
                           </button>
                           <button
-                            onClick={() => setSortByNIM(true)}
+                            onClick={() => setSortByRecent(true)}
                             className={`px-3 py-1 text-[8px] font-bold uppercase tracking-wider rounded transition cursor-pointer ${
-                              sortByNIM ? "bg-white text-black" : "bg-[#0c0c0c] text-white hover:bg-white/5"
+                              sortByRecent ? "bg-white text-black" : "bg-[#0c0c0c] text-white hover:bg-white/5"
                             }`}
                           >
                             Recent
@@ -646,27 +618,7 @@ export default function CompanyDashboard() {
                                   <div className="font-bold text-[8px] text-white">GPA: {app.student.cgpa}</div>
                                 </td>
                                 <td className="py-4 px-4">
-                                  {app.nimScore !== null && app.nimScore !== undefined ? (
-                                    <div className="font-bold text-white flex flex-col space-y-0.5">
-                                      <span>{app.nimScore}% AI Match</span>
-                                      <button
-                                        type="button"
-                                        onClick={() => setSelectedFeedback(app.nimFeedback)}
-                                        className="text-white hover:underline text-[8px] text-left uppercase tracking-wider font-bold"
-                                      >
-                                        View AI Review
-                                      </button>
-                                    </div>
-                                  ) : (
-                                    <button
-                                      type="button"
-                                      onClick={() => handleNIMEvaluate(app.id)}
-                                      disabled={evaluatingId === app.id}
-                                      className="block rounded bg-white/10 px-2 py-0.5 text-[8px] font-bold text-white hover:bg-white hover:text-black transition disabled:opacity-50 uppercase cursor-pointer"
-                                    >
-                                      {evaluatingId === app.id ? "Analyzing" : "Run AI Evaluation"}
-                                    </button>
-                                  )}
+                                  <span className="font-bold text-white">{app.matchScore ?? 0}% Match</span>
                                 </td>
                                 <td className="py-4 px-4 text-[9px] font-bold uppercase tracking-widest text-white">
                                   {app.status}
@@ -711,32 +663,6 @@ export default function CompanyDashboard() {
         )}
       </main>
 
-      {selectedFeedback && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 animate-fade-in backdrop-blur-sm">
-          <div className="bg-[#0c0c0c] max-w-lg w-full rounded p-6 shadow-2xl flex flex-col space-y-4">
-            <div className="flex justify-between items-center pb-3">
-              <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-white">NVIDIA NIM AI Review</h3>
-              <button
-                onClick={() => setSelectedFeedback(null)}
-                className="text-card-foreground hover:text-white font-bold text-lg focus:outline-none"
-              >
-                ×
-              </button>
-            </div>
-            <div className="text-[10px] font-light text-card-foreground leading-relaxed whitespace-pre-line max-h-96 overflow-y-auto pr-2 bg-black/40 p-4 rounded">
-              {selectedFeedback}
-            </div>
-            <div className="flex justify-end pt-3">
-              <button
-                onClick={() => setSelectedFeedback(null)}
-                className="bg-white text-black hover:bg-white/80 px-4 py-2 text-xs font-bold uppercase tracking-wider rounded transition"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

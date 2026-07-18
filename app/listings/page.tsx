@@ -15,7 +15,7 @@ export default function StudentListings() {
   const [withdrawingId, setWithdrawingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [sortBy, setSortBy] = useState<"ai" | "normal">("ai");
+  const [sortBy, setSortBy] = useState<"match" | "normal">("match");
 
   const fetchData = async () => {
     try {
@@ -124,7 +124,7 @@ export default function StudentListings() {
   }
 
   const sortedListings = [...listings].sort((a, b) => {
-    if (sortBy === "ai") {
+    if (sortBy === "match") {
       return b.matchScore - a.matchScore;
     } else {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
@@ -203,16 +203,16 @@ export default function StudentListings() {
 
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 mb-10 select-none gap-4">
           <h2 className="text-2xl font-black text-white uppercase tracking-[0.2em]">
-            {sortBy === "ai" ? "Match Feed" : "Opportunities"}
+            {sortBy === "match" ? "Match Feed" : "Opportunities"}
           </h2>
           <div className="flex rounded bg-[#0c0c0c] p-1">
             <button
-              onClick={() => setSortBy("ai")}
+              onClick={() => setSortBy("match")}
               className={`px-4 py-1.5 text-[9px] font-bold uppercase tracking-wider rounded transition-colors cursor-pointer ${
-                sortBy === "ai" ? "bg-white text-black" : "text-card-foreground hover:text-white"
+                sortBy === "match" ? "bg-white text-black" : "text-card-foreground hover:text-white"
               }`}
             >
-              AI Matches
+              Best Match
             </button>
             <button
               onClick={() => setSortBy("normal")}

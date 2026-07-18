@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { successResponse, errorResponse } from "@/lib/api-response";
-import { calculateMatchScore } from "@/lib/matching";
+import { computeMatchScore } from "@/lib/matching";
 import { createNotification } from "@/lib/notifications";
 
 export async function GET(req: Request) {
@@ -15,7 +15,11 @@ export async function GET(req: Request) {
     const student = await prisma.student.findUnique({
       where: { id: userId },
       include: {
-        skills: true,
+        skills: {
+          include: {
+            skill: true,
+          },
+        },
       },
     });
 
@@ -51,7 +55,6 @@ export async function GET(req: Request) {
             select: {
               id: true,
               status: true,
-              nimScore: true,
             },
           },
         },
@@ -60,9 +63,7 @@ export async function GET(req: Request) {
       // Calculate match score in-memory
       const scoredListings = listings.map((listing) => {
         const hasApplied = listing.applications.length > 0;
-        const score = hasApplied
-          ? (listing.applications[0]?.nimScore ?? calculateMatchScore(student, listing))
-          : calculateMatchScore(student, listing);
+        const score = computeMatchScore(student, listing);
         return {
           ...listing,
           matchScore: score,
@@ -91,7 +92,7 @@ export async function GET(req: Request) {
               await createNotification(
                 "STUDENT",
                 userId,
-                `New matching position: "${l.title}" aligns with your profile (AI Fit: ${l.matchScore}%).`
+                `New matching position: "${l.title}" aligns with your profile (${l.matchScore}% match).`
               );
             }
           }
@@ -146,7 +147,7 @@ export async function GET(req: Request) {
       // Include match scores for each application to this listing
       const listingsWithScoredApplicants = listings.map((listing) => {
         const applications = listing.applications.map((app) => {
-          const score = calculateMatchScore(app.student, listing);
+          const score = computeMatchScore(app.student, listing);
           return {
             ...app,
             matchScore: score,

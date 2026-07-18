@@ -2,8 +2,6 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { successResponse, errorResponse } from "@/lib/api-response";
 import { createNotification } from "@/lib/notifications";
-import { evaluateApplicationWithNIM } from "@/lib/matching";
-
 export async function GET() {
   const { userId } = await auth();
   if (!userId) {
@@ -131,11 +129,6 @@ export async function POST(req: Request) {
       });
 
       return { application, listing, shouldClose };
-    });
-
-    // Trigger auto AI evaluation in the background asynchronously (no blocking)
-    evaluateApplicationWithNIM(result.application.id).catch((err) => {
-      console.error("Background NIM AI evaluation failed to trigger:", err);
     });
 
     // Trigger Notification to Company: New applicant
