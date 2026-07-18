@@ -57,7 +57,7 @@ NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/
 NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/
 
 # Neon PostgreSQL Database Connection URL
-DATABASE_URL="postgresql://neondb_owner:npg_hTgV3vPy2dNW@ep-polished-smoke-azg6kai7-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+DATABASE_URL="postgresql://neondb_owner:<YOUR_PASSWORD>@<YOUR_NEON_HOST>/neondb?sslmode=require&channel_binding=require"
 
 # NVIDIA NIM API Key (needed for AI applicant evaluations)
 NVIDIA_API_KEY=nvapi-...
