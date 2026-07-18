@@ -15,6 +15,7 @@ export default function StudentListings() {
   const [withdrawingId, setWithdrawingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [sortBy, setSortBy] = useState<"ai" | "normal">("ai");
 
   const fetchData = async () => {
     try {
@@ -122,6 +123,14 @@ export default function StudentListings() {
     );
   }
 
+  const sortedListings = [...listings].sort((a, b) => {
+    if (sortBy === "ai") {
+      return b.matchScore - a.matchScore;
+    } else {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    }
+  });
+
   return (
     <div className="flex flex-col flex-1 bg-[#050505] min-h-screen relative overflow-hidden">
       {/* Background glow ambient */}
@@ -137,7 +146,7 @@ export default function StudentListings() {
             >
               Weavr
             </span>
-            <span className="text-[10px] font-bold text-accent-cyan uppercase tracking-widest px-2.5 py-0.5 border border-accent-cyan/30 rounded bg-accent-cyan/5">
+            <span className="text-[10px] font-bold text-accent-cyan uppercase tracking-widest px-2.5 py-0.5 rounded bg-accent-cyan/5">
               Opportunities Feed
             </span>
           </div>
@@ -164,8 +173,8 @@ export default function StudentListings() {
                 )}
               </button>
               {showNotifications && (
-                <div className="absolute right-0 mt-3 w-80 rounded border border-white/10 bg-[#111111] shadow-2xl py-2 z-50 animate-fade-in">
-                  <div className="px-4 py-2 border-b border-white/10 font-bold text-[10px] uppercase tracking-wider text-white">
+                <div className="absolute right-0 mt-3 w-80 rounded bg-[#111111] shadow-2xl py-2 z-50 animate-fade-in">
+                  <div className="px-4 py-2 font-bold text-[10px] uppercase tracking-wider text-white bg-white/5">
                     Unread Notifications
                   </div>
                   {notifications.length === 0 ? (
@@ -190,22 +199,42 @@ export default function StudentListings() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto w-full px-6 lg:px-8 py-12 flex-1 z-10">
         {error && (
-          <div className="mb-8 border border-accent-pink/30 bg-accent-pink/5 text-accent-pink p-4 rounded text-xs uppercase tracking-wider font-semibold">
+          <div className="mb-8 bg-accent-pink/5 text-accent-pink p-4 rounded text-xs uppercase tracking-wider font-semibold">
             {error}
           </div>
         )}
 
-        <h2 className="text-3xl font-black text-white uppercase tracking-[0.2em] border-b border-white/10 pb-4 mb-10 select-none">
-          Match Feed
-        </h2>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 mb-10 select-none gap-4">
+          <h2 className="text-3xl font-black text-white uppercase tracking-[0.2em]">
+            {sortBy === "ai" ? "AI Match Feed" : "Opportunities"}
+          </h2>
+          <div className="flex rounded-lg bg-[#111111] p-1">
+            <button
+              onClick={() => setSortBy("ai")}
+              className={`px-4 py-2 text-[10px] font-bold uppercase tracking-wider rounded-md transition-colors cursor-pointer ${
+                sortBy === "ai" ? "bg-white text-black" : "text-white hover:bg-white/5"
+              }`}
+            >
+              AI Matches
+            </button>
+            <button
+              onClick={() => setSortBy("normal")}
+              className={`px-4 py-2 text-[10px] font-bold uppercase tracking-wider rounded-md transition-colors cursor-pointer ${
+                sortBy === "normal" ? "bg-white text-black" : "text-white hover:bg-white/5"
+              }`}
+            >
+              All Listings
+            </button>
+          </div>
+        </div>
 
-        {listings.length === 0 ? (
-          <div className="text-center py-16 border border-dashed border-white/10 rounded-xl bg-[#111111]/30">
+        {sortedListings.length === 0 ? (
+          <div className="text-center py-16 rounded-xl bg-[#111111]/30">
             <p className="text-xs uppercase tracking-wider text-card-foreground font-light">No matching active positions found.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {listings.map((l) => {
+            {sortedListings.map((l) => {
               const isApplied = l.hasApplied;
               const appStatus = l.applicationStatus;
               const isHighMatch = l.matchScore >= 70;
@@ -213,7 +242,7 @@ export default function StudentListings() {
               return (
                 <div
                   key={l.id}
-                  className="glass-card rounded-xl p-6 flex flex-col justify-between hover:border-accent-purple/35 transition-all duration-300"
+                  className="glass-card rounded-xl p-6 flex flex-col justify-between transition-all duration-300"
                 >
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
@@ -221,10 +250,10 @@ export default function StudentListings() {
                         {l.company?.name || "Acme Corp"}
                       </span>
                       <span
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
                           isHighMatch
-                            ? "border-accent-purple/40 text-accent-purple bg-accent-purple/5 shadow-[0_0_15px_rgba(124,58,237,0.15)]"
-                            : "border-white/15 text-white bg-white/5"
+                            ? "text-accent-purple bg-accent-purple/5 shadow-[0_0_15px_rgba(124,58,237,0.15)]"
+                            : "text-white bg-white/5"
                         }`}
                       >
                         {l.matchScore}% AI Fit
@@ -238,7 +267,7 @@ export default function StudentListings() {
                       </p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 border-t border-b border-white/5 py-3.5 my-2">
+                    <div className="grid grid-cols-2 gap-4 py-3.5 my-2 bg-white/[0.02] rounded-lg px-4">
                       <div>
                         <span className="block text-[9px] font-semibold text-card-foreground uppercase tracking-widest">
                           Stipend
@@ -265,7 +294,7 @@ export default function StudentListings() {
                         {l.requiredSkills.map((rs: any) => (
                           <span
                             key={rs.skill.id}
-                            className="border border-white/10 bg-white/5 text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider text-white"
+                            className="bg-white/5 text-[9px] px-2.5 py-1 rounded-full uppercase tracking-wider text-white font-light"
                           >
                             {rs.skill.name}
                           </span>
@@ -274,10 +303,10 @@ export default function StudentListings() {
                     </div>
                   </div>
 
-                  <div className="mt-8 pt-4 border-t border-white/5">
+                  <div className="mt-8 pt-4">
                     {isApplied ? (
                       <div className="flex flex-col space-y-2">
-                        <div className="flex items-center justify-between border border-white/10 rounded-lg p-2.5 text-xs bg-white/5">
+                        <div className="flex items-center justify-between rounded-lg p-2.5 text-xs bg-white/5">
                           <span className="text-[9px] font-bold uppercase tracking-wider text-card-foreground">Application:</span>
                           <span className="text-[10px] font-bold text-accent-cyan uppercase tracking-widest">
                             {appStatus}
@@ -287,7 +316,7 @@ export default function StudentListings() {
                           <button
                             onClick={() => handleWithdraw(l.applicationId)}
                             disabled={withdrawingId === l.applicationId}
-                            className="w-full border border-white/10 hover:border-accent-pink hover:text-accent-pink text-[10px] font-bold uppercase tracking-widest py-2 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+                            className="w-full bg-[#111111] hover:bg-accent-pink/15 hover:text-accent-pink text-[10px] font-bold uppercase tracking-widest py-2 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
                           >
                             {withdrawingId === l.applicationId ? "Withdrawing..." : "Withdraw Apply"}
                           </button>
@@ -296,7 +325,7 @@ export default function StudentListings() {
                     ) : l.currentApplicants >= l.maxApplicants ? (
                       <button
                         disabled
-                        className="w-full bg-white/5 border border-white/5 text-card-foreground text-[10px] font-bold uppercase tracking-widest py-3 rounded-lg cursor-not-allowed opacity-40"
+                        className="w-full bg-white/5 text-card-foreground text-[10px] font-bold uppercase tracking-widest py-3 rounded-lg cursor-not-allowed opacity-40"
                       >
                         Cap Overload
                       </button>

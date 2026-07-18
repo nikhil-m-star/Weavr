@@ -120,7 +120,7 @@ export default function Home() {
                   </button>
                 </SignUpButton>
                 <SignInButton mode="modal">
-                  <button className="border border-white/10 hover:border-accent-cyan hover:text-accent-cyan bg-white/5 rounded-full px-8 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-white transition duration-300 cursor-pointer">
+                  <button className="hover:text-accent-cyan hover:bg-white/10 bg-white/5 rounded-full px-8 py-3.5 text-xs font-bold uppercase tracking-[0.2em] text-white transition duration-300 cursor-pointer">
                     Log In
                   </button>
                 </SignInButton>
@@ -131,7 +131,7 @@ export default function Home() {
       </section>
 
       {/* Case Studies Bento Grid */}
-      <section id="features" className="py-32 px-6 lg:px-8 max-w-7xl mx-auto w-full border-t border-white/5">
+      <section id="features" className="py-32 px-6 lg:px-8 max-w-7xl mx-auto w-full">
         <div className="mb-16">
           <h2 className="text-[6vw] font-black uppercase tracking-tighter leading-none">
             BENTO ENGINE
@@ -151,7 +151,7 @@ export default function Home() {
               <span className="w-2.5 h-2.5 rounded-full bg-[#27C93F]"></span>
             </div>
             <div className="mt-8 space-y-4">
-              <span className="text-[9px] font-bold text-accent-cyan uppercase tracking-widest px-2.5 py-0.5 border border-accent-cyan/30 rounded bg-accent-cyan/5 w-fit block">
+              <span className="text-[9px] font-bold text-accent-cyan uppercase tracking-widest px-2.5 py-0.5 rounded bg-accent-cyan/5 w-fit block">
                 Interactive Logic
               </span>
               <h3 className="text-2xl font-bold uppercase tracking-wider text-white">Dynamic Match Score</h3>
@@ -160,12 +160,12 @@ export default function Home() {
               </p>
             </div>
             {/* Visual grayscale graphic mock */}
-            <div className="mt-6 border border-white/10 rounded bg-[#090909] p-4 flex justify-between items-center grayscale group-hover:grayscale-0 transition-all duration-300">
+            <div className="mt-6 rounded bg-[#090909] p-4 flex justify-between items-center grayscale group-hover:grayscale-0 transition-all duration-300">
               <div className="space-y-1">
                 <div className="text-[10px] font-bold uppercase text-white">Full Stack React Engineer</div>
                 <div className="text-[9px] text-card-foreground uppercase">Tech Corp • Remote</div>
               </div>
-              <div className="border border-accent-purple/35 text-accent-purple text-xs font-black px-3 py-1 rounded bg-accent-purple/5 shadow-[0_0_10px_rgba(124,58,237,0.2)]">
+              <div className="text-accent-purple text-xs font-black px-3 py-1 rounded bg-accent-purple/5 shadow-[0_0_10px_rgba(124,58,237,0.2)]">
                 96% Match
               </div>
             </div>
@@ -173,7 +173,7 @@ export default function Home() {
 
           {/* Bento Card 2 */}
           <div className="glass-card rounded-xl p-8 flex flex-col justify-between">
-            <span className="text-[9px] font-bold text-accent-pink uppercase tracking-widest px-2.5 py-0.5 border border-accent-pink/30 rounded bg-accent-pink/5 w-fit">
+            <span className="text-[9px] font-bold text-accent-pink uppercase tracking-widest px-2.5 py-0.5 rounded bg-accent-pink/5 w-fit">
               Race Safety
             </span>
             <div className="space-y-3 mt-8">
@@ -186,7 +186,7 @@ export default function Home() {
 
           {/* Bento Card 3 */}
           <div className="glass-card rounded-xl p-8 flex flex-col justify-between">
-            <span className="text-[9px] font-bold text-accent-purple uppercase tracking-widest px-2.5 py-0.5 border border-accent-purple/30 rounded bg-accent-purple/5 w-fit">
+            <span className="text-[9px] font-bold text-accent-purple uppercase tracking-widest px-2.5 py-0.5 rounded bg-accent-purple/5 w-fit">
               Recruiter Intelligence
             </span>
             <div className="space-y-3 mt-8">
@@ -199,7 +199,7 @@ export default function Home() {
 
           {/* Bento Card 4 (Spans 2 cols) */}
           <div className="md:col-span-2 glass-card rounded-xl p-8 flex flex-col justify-between aspect-video md:aspect-auto">
-            <span className="text-[9px] font-bold text-white uppercase tracking-widest px-2.5 py-0.5 border border-white/10 rounded bg-white/5 w-fit">
+            <span className="text-[9px] font-bold text-white uppercase tracking-widest px-2.5 py-0.5 rounded bg-white/5 w-fit">
               Completeness Engine
             </span>
             <div className="space-y-4 mt-8">
@@ -213,7 +213,7 @@ export default function Home() {
       </section>
 
       {/* Pricing Section with Glow and Range Calculator */}
-      <section id="pricing" className="py-32 bg-[#0B0216] relative overflow-hidden px-6 border-t border-white/5">
+      <section id="pricing" className="py-32 bg-[#0B0216] relative overflow-hidden px-6">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#7C3AED]/10 rounded-full blur-[100px] pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto w-full space-y-24 z-10 relative">
@@ -235,13 +235,13 @@ export default function Home() {
               {isSignedIn ? (
                 <button
                   onClick={() => router.push(dashboardUrl)}
-                  className="w-full border border-white/15 text-[10px] font-bold uppercase tracking-widest py-2.5 rounded-lg hover:bg-white hover:text-black transition cursor-pointer"
+                  className="w-full bg-white/5 text-[10px] font-bold uppercase tracking-widest py-2.5 rounded-lg hover:bg-white hover:text-black transition cursor-pointer"
                 >
                   Go to Dashboard
                 </button>
               ) : (
                 <SignInButton mode="modal">
-                  <button className="w-full border border-white/15 text-[10px] font-bold uppercase tracking-widest py-2.5 rounded-lg hover:bg-white hover:text-black transition cursor-pointer">
+                  <button className="w-full bg-white/5 text-[10px] font-bold uppercase tracking-widest py-2.5 rounded-lg hover:bg-white hover:text-black transition cursor-pointer">
                     Join Free
                   </button>
                 </SignInButton>
@@ -249,7 +249,7 @@ export default function Home() {
             </div>
 
             {/* Growth Card (Scaled with white background) */}
-            <div className="bg-white text-[#111111] rounded-xl p-8 space-y-6 shadow-2xl transform md:scale-105 border border-white relative z-20">
+            <div className="bg-white text-[#111111] rounded-xl p-8 space-y-6 shadow-2xl transform md:scale-105 relative z-20">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent-purple text-white text-[8px] font-black uppercase tracking-widest px-3 py-1 rounded-full">
                 Popular
               </div>
@@ -286,13 +286,13 @@ export default function Home() {
               {isSignedIn ? (
                 <button
                   onClick={() => router.push(dashboardUrl)}
-                  className="w-full border border-white/15 text-[10px] font-bold uppercase tracking-widest py-2.5 rounded-lg hover:bg-white hover:text-black transition cursor-pointer"
+                  className="w-full bg-white/5 text-[10px] font-bold uppercase tracking-widest py-2.5 rounded-lg hover:bg-white hover:text-black transition cursor-pointer"
                 >
                   Go to Dashboard
                 </button>
               ) : (
                 <SignInButton mode="modal">
-                  <button className="w-full border border-white/15 text-[10px] font-bold uppercase tracking-widest py-2.5 rounded-lg hover:bg-white hover:text-black transition cursor-pointer">
+                  <button className="w-full bg-white/5 text-[10px] font-bold uppercase tracking-widest py-2.5 rounded-lg hover:bg-white hover:text-black transition cursor-pointer">
                     Contact Sales
                   </button>
                 </SignInButton>
@@ -301,7 +301,7 @@ export default function Home() {
           </div>
 
           {/* Custom Interactive Calculator */}
-          <div className="max-w-xl mx-auto bg-[#1A0B2E] border border-white/10 rounded-2xl p-8 shadow-2xl space-y-6">
+          <div className="max-w-xl mx-auto bg-[#1A0B2E] rounded-2xl p-8 shadow-2xl space-y-6">
             <h4 className="text-xs font-bold uppercase tracking-widest text-white text-center">
               Interactive Cost Estimator
             </h4>
@@ -318,7 +318,7 @@ export default function Home() {
                 onChange={(e) => setSliderValue(parseInt(e.target.value))}
                 className="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-accent-purple"
               />
-              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+              <div className="grid grid-cols-2 gap-4 pt-4">
                 <div className="text-center">
                   <span className="block text-[8px] font-semibold uppercase tracking-widest text-card-foreground">
                     Monthly Matches
@@ -338,7 +338,7 @@ export default function Home() {
       </section>
 
       {/* Massive Scale Editorial Footer */}
-      <footer className="bg-[#050505] border-t border-white/10 py-24 px-6 lg:px-8 mt-auto">
+      <footer className="bg-[#050505] py-24 px-6 lg:px-8 mt-auto">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="md:col-span-2 space-y-4">
             <span className="text-3xl font-black uppercase tracking-[0.2em] text-white">WEAVR</span>
@@ -363,7 +363,7 @@ export default function Home() {
             </ul>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto border-t border-white/5 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-[9px] uppercase tracking-wider text-card-foreground font-light">
+        <div className="max-w-7xl mx-auto mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-[9px] uppercase tracking-wider text-card-foreground font-light">
           <span>© 2026 Weavr Technologies Inc.</span>
           <span className="mt-2 md:mt-0">Design style: Cinematic Dark Mode</span>
         </div>

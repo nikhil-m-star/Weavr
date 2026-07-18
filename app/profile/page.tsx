@@ -176,14 +176,14 @@ export default function Profile() {
           <div className="mt-8 grid grid-cols-2 gap-6 pt-4">
             <button
               onClick={() => handleRoleSelect("student")}
-              className="glass-card rounded-lg p-8 hover:border-accent-cyan flex flex-col items-center justify-center space-y-3 cursor-pointer group"
+              className="glass-card rounded-lg p-8 flex flex-col items-center justify-center space-y-3 cursor-pointer group"
             >
               <span className="text-lg font-bold uppercase tracking-wider text-white group-hover:text-accent-cyan transition-colors">Student</span>
               <span className="text-[10px] uppercase tracking-wider text-card-foreground">Find Matches</span>
             </button>
             <button
               onClick={() => handleRoleSelect("company")}
-              className="glass-card rounded-lg p-8 hover:border-accent-pink flex flex-col items-center justify-center space-y-3 cursor-pointer group"
+              className="glass-card rounded-lg p-8 flex flex-col items-center justify-center space-y-3 cursor-pointer group"
             >
               <span className="text-lg font-bold uppercase tracking-wider text-white group-hover:text-accent-pink transition-colors">Company</span>
               <span className="text-[10px] uppercase tracking-wider text-card-foreground">Post Jobs</span>
@@ -199,7 +199,7 @@ export default function Profile() {
       <div className="absolute top-0 right-1/4 w-[300px] h-[300px] bg-accent-purple/5 rounded-full blur-[80px] pointer-events-none"></div>
 
       <div className="max-w-2xl mx-auto w-full z-10">
-        <div className="flex items-center justify-between border-b pb-6 border-white/10">
+        <div className="flex items-center justify-between pb-6">
           <div>
             <h2 className="text-2xl font-black uppercase tracking-[0.15em] text-white">
               {role === "student" ? "Configure Student" : "Configure Company"}
@@ -235,13 +235,13 @@ export default function Profile() {
         </div>
 
         {error && (
-          <div className="mt-6 border border-accent-pink/30 bg-accent-pink/5 text-accent-pink p-4 rounded text-xs uppercase tracking-wider font-semibold">
+          <div className="mt-6 bg-accent-pink/5 text-accent-pink p-4 rounded text-xs uppercase tracking-wider font-semibold">
             {error}
           </div>
         )}
 
         {role === "company" && !companyApproved && companyName && (
-          <div className="mt-6 border border-white/10 bg-card p-4 rounded text-xs uppercase tracking-wider text-card-foreground font-light">
+          <div className="mt-6 bg-card p-4 rounded text-xs uppercase tracking-wider text-card-foreground font-light">
             Your company account is pending administrator approval.
           </div>
         )}
@@ -259,7 +259,7 @@ export default function Profile() {
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
+                    className="mt-1.5 block w-full rounded bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
                   />
                 </div>
 
@@ -273,7 +273,7 @@ export default function Profile() {
                       required
                       value={college}
                       onChange={(e) => setCollege(e.target.value)}
-                      className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
+                      className="mt-1.5 block w-full rounded bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
                     />
                   </div>
                   <div>
@@ -285,7 +285,7 @@ export default function Profile() {
                       required
                       value={branch}
                       onChange={(e) => setBranch(e.target.value)}
-                      className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
+                      className="mt-1.5 block w-full rounded bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
                     />
                   </div>
                 </div>
@@ -300,7 +300,7 @@ export default function Profile() {
                       required
                       value={gradYear}
                       onChange={(e) => setGradYear(e.target.value)}
-                      className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
+                      className="mt-1.5 block w-full rounded bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
                     />
                   </div>
                   <div>
@@ -313,7 +313,7 @@ export default function Profile() {
                       required
                       value={cgpa}
                       onChange={(e) => setCgpa(e.target.value)}
-                      className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
+                      className="mt-1.5 block w-full rounded bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
                     />
                   </div>
                 </div>
@@ -327,7 +327,7 @@ export default function Profile() {
                       type="url"
                       value={githubUrl}
                       onChange={(e) => setGithubUrl(e.target.value)}
-                      className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
+                      className="mt-1.5 block w-full rounded bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
                     />
                   </div>
                   <div>
@@ -338,7 +338,7 @@ export default function Profile() {
                       type="url"
                       value={linkedinUrl}
                       onChange={(e) => setLinkedinUrl(e.target.value)}
-                      className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
+                      className="mt-1.5 block w-full rounded bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
                     />
                   </div>
                 </div>
@@ -351,7 +351,7 @@ export default function Profile() {
                     type="url"
                     value={resumeUrl}
                     onChange={(e) => setResumeUrl(e.target.value)}
-                    className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
+                    className="mt-1.5 block w-full rounded bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
                   />
                 </div>
 
@@ -363,7 +363,7 @@ export default function Profile() {
                     rows={3}
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
-                    className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors resize-none"
+                    className="mt-1.5 block w-full rounded bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors resize-none"
                   />
                 </div>
 
@@ -383,7 +383,7 @@ export default function Profile() {
                           handleAddSkill();
                         }
                       }}
-                      className="block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
+                      className="block w-full rounded bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:ring-1 focus:ring-accent-cyan text-xs font-light tracking-wide transition-colors"
                     />
                     <button
                       type="button"
@@ -394,7 +394,7 @@ export default function Profile() {
                     </button>
                   </div>
                   {skillInput && (
-                    <div className="mt-1.5 border border-white/10 rounded divide-y divide-white/5 bg-[#0c0c0c] max-h-32 overflow-y-auto z-20 relative">
+                    <div className="mt-1.5 rounded bg-[#0c0c0c] max-h-32 overflow-y-auto z-20 relative shadow-xl">
                       {allSkills
                         .filter((s) => s.name.toLowerCase().includes(skillInput.toLowerCase()))
                         .map((s) => (
@@ -417,7 +417,7 @@ export default function Profile() {
                     {skills.map((skill) => (
                       <span
                         key={skill}
-                        className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-light uppercase tracking-wider text-white"
+                        className="inline-flex items-center rounded-full bg-white/5 px-3 py-1 text-[10px] font-light uppercase tracking-wider text-white"
                       >
                         {skill}
                         <button
@@ -443,14 +443,14 @@ export default function Profile() {
                     required
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
-                    className="mt-1.5 block w-full rounded border border-white/10 bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:border-accent-pink focus:ring-1 focus:ring-accent-pink text-xs font-light tracking-wide transition-colors"
+                    className="mt-1.5 block w-full rounded bg-[#0c0c0c] px-3.5 py-2.5 text-white focus:outline-none focus:ring-1 focus:ring-accent-pink text-xs font-light tracking-wide transition-colors"
                   />
                 </div>
               </div>
             )}
           </div>
 
-          <div className="flex justify-between items-center pt-4 border-t border-white/10">
+          <div className="flex justify-between items-center pt-4">
             <button
               type="button"
               onClick={() => setRole(null)}

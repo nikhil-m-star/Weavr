@@ -90,7 +90,7 @@ Respond ONLY with a valid JSON object in this exact schema, without any markdown
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "meta/llama-3.1-70b-instruct",
+        model: "meta/llama-3.1-8b-instruct",
         messages: [
           {
             role: "system",
